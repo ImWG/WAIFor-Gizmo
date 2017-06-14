@@ -25,7 +25,6 @@ Begin ECProject = Gizmo
   Module=Gizmo.asm
   Module=Main.asm
   Module=MemoryWriter.asm
-  Module=StandardPatches.asm
   Include=Kernel32.inc
   Include=User32.inc
   Library=Kernel32.lib
