@@ -1,0 +1,101 @@
+==============================================
+
+                 WAIFor Gizmo
+                 Alpha Version
+                        By WAIFor 2017.06.14
+
+==============================================
+
+
+Introduction
+------------------------------------
+This is a patch for reverse engineering of Age of Empires 2: The Conquerors.
+With this, we can develop plug-in modules as DLL files, including unhardcoding
+and trigger units.
+
+You may have known Daniel Pereira's Portuguese Civ Mod(PCM), which changed
+many hardcodes in EXE file. He used a DLL file for all patches, instead of
+changing EXE file directly, which is more flexible.
+Actually, Userpatch had used DLL for extended functions, you can see wndmode.dll
+on the directory of game.
+
+Gizmo is a loader, allowing developers to load specific DLLs into game. To
+do this, they only need to list modules in INI file!
+
+
+Loader Rules
+------------------------------------
+First of all, we have to make Gizmo.dll loaded by the game. So we can use
+WAIFor's Trigger & Extension Patch (WTEP) version 1.03.01.0611, or higher,
+to enable gizmo's loading.
+The DLL file is placed at <AOK Directory>\Games\<UP Name>\Data\Gizmo.dll
+(first) or .\Gizmo.dll (second).
+
+An alternative method is to use Daniel Pereira's Extended Triggers Patch 1.5.
+patch your EXE first, then change loading DLL name as Gizmo.dll.
+
+For other files, INI configuration file must be placed at the same directory
+as DLL, module DLL files may be at sub directories.
+
+INI file has two sections: [Patches] for unhardcoding patches, and [Triggers]
+for new conditions and effects.
+Each section contains items to load. Keys must be serial positive numbers:
+1, 2, 3 ... Values are DLL file names. The larger key is, the latter module
+loaded.
+
+When the game is running, Gizmo will load patches, to inject the EXE file.
+For trigger modules, Gizmo will load and assign them after original conditions
+and effects. So, you can load multiple triggers without collision!
+
+
+Module Developing
+------------------------------------
+There are two kinds of modules: patches and triggers.
+Both of them need to allocate some certain interfaces for Gizmo. In MASM, 
+using EXPORTS can do this. Interfaces is used to locate important data.
+In source codes of Gizmo, we provided templates of two modules. You can refer
+them to get more information.
+
+Interfaces of patches:
+
+        Patches - DWord * 3?, patches to write. First DWord is starting destination
+                  address, second is pointer of patch to write, third is length
+                  of the patch.
+      Addresses - DWord * ?, address List To Change (Offset 1, assigned by FakeJmps
+                  and FakeCalls).
+     Addresses2 - DWord * ?, address List To Change (Offset 2, assigned by Fake
+                  Conditional Jumps).
+DirectAddresses - DWord * 3?, set direct addresses. First DWord is destination
+                  address, second is the address to write, third is offset
+                  of the first. Often used in switch jumps.
+          Jumps - DWord * 2?, write some jumps (mainly from original codes) to patch
+                  positions. First DWord is source address, second is address to
+                  jump.
+
+All above lists must be ended with a DWord null(0). Any of them could be omitted
+if there is no such operations to do.
+Patches can do some works in DllEntryPoint process, though not used commonly.
+
+Interfaces of triggers:
+
+    EffectCount - DWord, count of effects (N)
+    EffectNames - DWord * N, pointers of effect name strings. Strings should be
+                  ended with null bytes.
+   EffectInputs - DWord * 2N, effect input settings. First DWord is available
+                  inputs, second is necessary inputs
+        Effects - DWord * N, pointers of effect functions
+
+ ConditionCount - DWord, count of conditions (N)
+ ConditionNames - DWord * N, pointers of condition name strings.
+ConditionInputs - DWord * 2N, condition input settings
+     Conditions - DWord * N, pointers of condition functions
+
+      Addresses - DWord * ?, same as patches
+     Addresses2 - DWord * ?, same as patches
+
+If a trigger module has no either effects or conditions, those interfaces can be
+omitted. Addresses and Addresses2 is similar.
+
+In templates, we provided some "Fake" macros, making jumps and calls easier. What
+you need to do is to insert "Fake<operation> <address>", then add their addresses
+into Addresses or Addresses2 lists.

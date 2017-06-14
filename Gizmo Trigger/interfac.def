@@ -1,0 +1,13 @@
+EXPORTS
+	EffectCount  = __EffectCount
+	EffectNames  = __EffectNames
+	EffectInputs = __EffectInputs
+	Effects      = __Effects
+
+	ConditionCount  = __ConditionCount
+	ConditionNames  = __ConditionNames
+	ConditionInputs = __ConditionInputs
+	Conditions      = __Conditions
+
+	Addresses    = __Addresses
+	Addresses2   = __Addresses2

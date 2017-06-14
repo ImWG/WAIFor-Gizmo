@@ -1,0 +1,33 @@
+#include "GizmoPatch.h"
+
+
+
+IDR_VERSION VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3L
+ FILEFLAGS 0x1L
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "Comments", "Programmed in assembly with Easy Code\0"
+            VALUE "CompanyName", "Microsoft\0"
+            VALUE "FileDescription", "Easy Code Masm classic project\0"
+            VALUE "FileVersion", "1.00.0.0001\0"
+            VALUE "InternalName", "GizmoPatch\0"
+            VALUE "LegalCopyright", "Copyright © 2017 Microsoft\0"
+            VALUE "OriginalFilename", "GizmoPatch.dll\0"
+            VALUE "ProductName", "GizmoPatch\0"
+            VALUE "ProductVersion", "1.00.0.0001\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0409, 1252
+    END
+END
