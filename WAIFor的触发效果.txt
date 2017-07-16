@@ -1,0 +1,267 @@
+WAIFor的触发效果 1.0
+
+Show Choice Box 显示选择对话框
+在游戏中弹出一个选择对话框，可以设置其中的文字，并根据用户的选项设置指定玩家的某个资源值：0-否，1-是。
+
+Resource Modifier 资源修改器
+设置目标玩家的资源值。除此之外，还有源玩家、资源类型、数量、外交关系以及数目参数，它们可以产生不同的效果。
+数目效果：（目标-目标玩家通过资源参数指定的资源，源-源玩家的通过数量参数指定的资源）
+0 - 目标 = 数量
+1 - 目标 += 数量
+2 - 目标 *= 数量
+3 - 目标 /= 数量
+4 - 目标 = 数量 / 目标玩家的资源
+5 - 目标 = 源
+6 - 目标 += 源
+7 - 目标 *= 源
+8 - 目标 /= 源
+9 - 目标 = 源 / 目标玩家的资源
+
+Save Resources To File 将资源存储至文件
+将一名玩家的所有资源量存储至“文字”参数指定的文件中。文件扩展名为.res。
+
+Load Resources From File 从文件中读取资源
+从.res文件中读取资源量，并设置给一名玩家。
+
+Set Resource Storage 设置资源存储
+能够修改单位的资源存储量。数目效果：
+0 - 设置目标单位的资源量
+1 - 增加目标单位的资源量
+2 - 将目标单位的资源值，设置为目标玩家的通过数量指定的资源
+3 - 将目标单位的资源值（多个则只用第一个），赋予目标玩家的通过数量指定的资源
+
+Protounit Modifier 原型单位修改器
+能够修改目标玩家的科技树中单位的属性，浮点型的属性则将数量除以1000，属性类型通过定时器参数来确定。数目效果：
+0 - 设置原型单位的属性值
+1 - 增加原型单位的属性值
+2 - 通过目标玩家的资源值，来设置原型单位的属性值。
+
+Object Modifier Selector 单位修改选择器
+筛选Object Modifier触发效果的单位列表。数目为0时，直接设置；为1时，则在原有的列表之后附加。最多支持256个单位。
+该效果须严格优先于Object Modifier效果，即前面的序号要大于后者的。
+
+Object Modifier 单位修改器
+在通过Object Modifier Selector指定了单位列表之后，来对它们的属性进行修改，修改后的单位会变得独立。
+参数的用法与Protounit Modifier类似。
+
+Create Units In Area 区域内建立单位
+单位会在通过区域参数指定的每一个地块中产生。数目为0时，受到地形和体积的限制，为1时则不受限制。
+
+Change/Replace Object 改变/替换单位
+对指定单位进行一定的操作，数量指定了新单位。数目决定了其效果：
+0 - 将单位转变为新单位
+1 - 将单位移除，在原来的位置上建立新单位
+2 - 在单位的位置上建立新单位，但不移除原单位
+
+WAIFor Unit Typer WAIFor 打字机
+可以在地图的特定位置上，将单位以5x5的点阵打出文字来。
+
+Focus Object 聚焦单位
+类似于原触发效果“改变视角”，不同在于它的目标不是固定点，而是目标单位。数目0、1可以指定改变视角的类型为移动、切换。
+
+
+附：原型单位属性（使用AGE 20151211的名称）
+
+编号 类型 最低单位类型 名称
+  000   (s)   10   Class
+  001   (s)   10   ID 1
+  002   (s)   10   ID 2
+  003   (s)   10   ID 3
+  004   (s)   10   Language DLL Name
+  005   (s)   10   Language DLL Creation
+  006   (l)   10   Hotkey
+  007   (l)   10   Language DLL Help
+  008   (l)   10   Language DLL Hotkey Text
+  009   (s)   10   Icon
+  010   (s)   80  *Angle
+  011   (g)   10   Standing Graphics.1
+  012   (g)   10   Standing Graphics.2
+  013   (g)   10   Dying Graphics.1
+  014   (g)   10   Dying Graphics.2
+  015   (g)   30   Walking and Running Graphics.1
+  016   (g)   30   Walking and Running Graphics.2
+  017   (g)   80   Snow Graphic
+  018   (g)   80   Construction Graphic
+  019   (g)   60   Attack Graphic
+  020   (g)   70   Garrision Graphic
+  021   (s)   10  *Hit Points
+  022   (f)   20  *Speed
+  023   (f)   30   Rotation Speed
+  024   (f)   10  *Line  Of  Sight
+  025   (f)   60  *Search Radius
+  026   (f)   60  *Max Range
+  027   (f)   60  *Min Range
+  028   (f)   60   Displayed Range
+  029   (s)   60   Displayed Attack
+  030   (s)   60   Frame Delay
+  031   (s)   60  *Accuracy Percent
+  032   (f)   60   Accuracy Error Radius
+  033   (f)   60  *Reload Time
+  034   (f)   60   Displayed Reload Time
+  035   (f)   60  *Blast Radius
+  036   (b)   60   Blast Attack Level
+  037   (s)   60  *Default Armor
+  038   (s)   60  *Damage Terrain Restriction
+  039   (s)   60   Displayed Melee Armor
+  040   (s)   70   Displayed Pierce Armor
+  041   (b)   60   Blast Defense Level
+  042   (s)   10  *Resource Capacity
+  043   (f)   10   Resource Decay
+  044   (f)   60  *Work Rate
+  045   (b)   30  *Garrison Capacity
+  046   (b)   80   Garrision Type
+  047   (f)   80  *Garrision Heal Rate
+  048   (s)   60   Projectile Unit
+  049   (l)   70   Missle  Dupl.  Unit
+  050   (l)   70   Charging Graphic
+  051   (b)   70   Charging Mode
+  052   (f)   70  *Total Missiles
+  053   (l)   70  *Max  Total  Missiles
+  054   (f)   70   Missile Spawning Area.1
+  055   (f)   70   Missile Spawning Area.2
+  056   (f)   70   Missile Spawning Area.3
+  057   (f)   60   Graphic Displacement XYZ.1
+  058   (f)   60   Graphic Displacement XYZ.2
+  059   (f)   60   Graphic Displacement XYZ.3
+  060   (b)   60   Stretch Mode
+  061   (b)   60  *Compensation Mode
+  062   (b)   60   Drop Animation Mode
+  063   (b)   60   Penetration Mode
+  064   (b)   60   Unknown 24
+  065   (f)   60   Projectile Arc
+  066   (b)   10  *Enabled
+  067   (b)   10   Disabled
+  068   (b)   10   Death:Revives
+  069   (b)   10   Hide In Editor
+  070   (b)   10   Air Mode
+  071   (b)   10   Fly Mode
+  072   (b)   60   Animal Mode
+  073   (b)   60   Tower Mode
+  074   (b)   80   Adjacent Mode
+  075   (b)   80   Built: Vanishes
+  076   (b)   70   Hero Mode
+  077   (b)   10   Placement Mode
+  078   (b)   10   Hill Mode
+  079   (b)   10   Fog Visibility
+  080   (b)   10   Sub Type
+  081   (b)   10   Interaction Mode
+  082   (b)   10   Minimap Mode
+  083   (b)   10   Minimap Color
+  084   (b)   10   Attack Mode
+  085   (b)   10   Edible Meat?
+  086   (b)   60   Task  Swap  ID
+  087   (b)   10   Unit Attribute
+  088   (b)   10   Civilization
+  089   (s)   10   Attribute Piece
+  090   (s)   10   Dead Unit
+  091   (s)   10   Placement Terrain.1
+  092   (s)   10   Placement Terrain.2
+  093   (s)   10   Placement Side Terrain.1
+  094   (s)   10   Placement Side Terrain.2
+  095   (s)   10   Terrain Restriction
+  096   (s)   80   Foundation Terrain
+  097   (s)   80   Old Terrain
+  098   (s)   80   Initiates Research
+  099   (s)   60   Action  When  Discovered
+  100   (s)   60   Drop Site.1
+  101   (s)   60   Drop Site.2
+  102   (f)   10  *Collosion Size.1
+  103   (f)   10  *Collosion Size.2
+  104   (f)   10   Clearance Size.1
+  105   (f)   10   Clearance Size.2
+  106   (f)   10   Selection Shape Size.1
+  107   (f)   10   Selection Shape Size.2
+  108   (b)   10   Unselectable
+  109   (b)   10   Is a resource?
+  110   (b)   10   Unknown 7
+  111   (b)   10   Unknown 8
+  112   (b)   10   Selection Mask
+  113   (b)   10   Selection Shape Type
+  114   (b)   10   Selection Shape
+  115   (b)   10   Selection Effect
+  116   (b)   10   Editor Selection Color
+  117   (s)   30   Tracking Unit
+  118   (b)   30   Tracking Unit Used
+  119   (f)   30   Tracking Unit Density
+  120   (f)   30   Rotations in Radians.1
+  121   (f)   30   Rotations in Radians.2
+  122   (f)   30   Rotations in Radians.3
+  123   (f)   30   Rotations in Radians.4
+  124   (f)   30   Rotations in Radians.5
+  125   (b)   10   Command ID
+  126   (s)   70   Train Location
+  127   (s)   70  *Train Time
+  128   (b)   70   Train Button
+  129   (s)   10   Storage.Type.1
+  130   (s)   10   Storage.Type.2
+  131   (s)   10   Storage.Type.3
+  132   (f)   10   Storage.Amount.1
+  133   (f)   10   Storage.Amount.2
+  134   (f)   10   Storage.Amount.3
+  135   (b)   10   Storage.Enable Mode.1
+  136   (b)   10   Storage.Enable Mode.2
+  137   (b)   10   Storage.Enable Mode.3
+  138   (s)   70   Cost Type.1
+  139   (s)   70   Cost Type.2
+  140   (s)   70   Cost Type.3
+  141   (s)   70  *Cost Amount.1
+  142   (s)   70  *Cost Amount.2
+  143   (s)   70  *Cost Amount.3
+  144   (s)   70   Cost Used.1
+  145   (s)   70   Cost Used.2
+  146   (s)   70   Cost Used.3
+  147   (s)   80   Stack Unit
+  148   (s)   80   Head Unit
+  149   (s)   80   Transform Unit
+  150   (s)   80   Pile Unit
+  151   (s)   80   Annex Units.1
+  152   (s)   80   Annex Units.2
+  153   (s)   80   Annex Units.3
+  154   (s)   80   Annex Units.4
+  155   (f)   80   Annex.Units Misplacement.1
+  156   (f)   80   Annex.Units Misplacement.2
+  157   (f)   80   Annex.Units Misplacement.3
+  158   (f)   80   Annex.Units Misplacement.4
+  159   (f)   80   Annex.Units Misplacement.5
+  160   (f)   80   Annex.Units Misplacement.6
+  161   (f)   80   Annex.Units Misplacement.7
+  162   (f)   80   Annex.Units Misplacement.8
+  163   (b)   80   Looting Table.1
+  164   (b)   80   Looting Table.2
+  165   (b)   80   Looting Table.3
+  166   (b)   80   Looting Table.4
+  167   (b)   80   Looting Table.5
+  168   (b)   80   Looting Table.6
+  169   (v)   10   Selection Sound
+  170   (v)   10   Dying Sound
+  171   (v)   10   Train Sound.1
+  172   (v)   10   Train Sound.2
+  173   (v)   60   Attack Sound
+  174   (v)   60   Move Sound
+  175   (v)   80   Construction Sound
+  176   (v)   80   Unknown Sound
+  177   (f)   10   HP Bar Height 1
+  178   (f)   10   HP Bar Height 2
+  179   (s)   10   Unknown 1
+  180   (f)   10   Unknown 3A
+  181   (b)   30   Unknown 11
+  182   (b)   30   Unknown 11
+  183   (f)   70   Unknown 26
+  184   (f)   70   Unknown 27
+  185   (b)   80   Unknown Type
+  186   (b)   80   Unknown 33
+  187   (f)   80   Wonder Timer?
+  188   (w)   70  *Melee Attack
+  189   (w)   70  *Pierce Attack
+  190   (w)   70  *Melee Armor
+  191   (w)   70  *Pierce Armor
+
+数据类型:
+b - 字节（0～255）
+s - 短整型（-32768～32767）
+l - 长整型（-2147483648～2147483647）
+f - 浮点型（实数，设置时除以1000）
+g - 图像（短整型，只可设置，编号需要参看AGE）
+v - 声音（与图像类似）
+
+许多属性是无法在游戏存档中保留的，除非单位被独立化。只有带“*”号的属性可以保留。
