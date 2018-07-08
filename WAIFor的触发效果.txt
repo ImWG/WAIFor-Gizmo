@@ -1,21 +1,21 @@
-WAIFor的触发效果 1.0
+﻿WAIFor的触发效果 1.0
 
-Show Choice Box 显示选择对话框
+Show Choice Box (SP) 显示选择对话框（单人游戏）
 在游戏中弹出一个选择对话框，可以设置其中的文字，并根据用户的选项设置指定玩家的某个资源值：0-否，1-是。
 
 Resource Modifier 资源修改器
 设置目标玩家的资源值。除此之外，还有源玩家、资源类型、数量、外交关系以及数目参数，它们可以产生不同的效果。
-数目效果：（目标-目标玩家通过资源参数指定的资源，源-源玩家的通过数量参数指定的资源）
+数目效果：（目标-目标玩家通过资源参数指定的资源，源1-源玩家通过资源参数指定的资源，源2-源玩家的通过数量参数指定的资源）
 0 - 目标 = 数量
-1 - 目标 += 数量
-2 - 目标 *= 数量
-3 - 目标 /= 数量
-4 - 目标 = 数量 / 目标玩家的资源
-5 - 目标 = 源
-6 - 目标 += 源
-7 - 目标 *= 源
-8 - 目标 /= 源
-9 - 目标 = 源 / 目标玩家的资源
+1 - 目标 = 源1+数量
+2 - 目标 = 源1*数量
+3 - 目标 = 源1/数量
+4 - 目标 = 数量 / 源1
+5 - 目标 = 源2
+6 - 目标 += 源2
+7 - 目标 *= 源2
+8 - 目标 /= 源2
+9 - 目标 = 源2 / 目标玩家的资源外交效果：“同盟”不变，“中立”使最终值除以360，“敌人”使最终值除以1000。
 
 Save Resources To File 将资源存储至文件
 将一名玩家的所有资源量存储至“文字”参数指定的文件中。文件扩展名为.res。
@@ -31,18 +31,15 @@ Set Resource Storage 设置资源存储
 3 - 将目标单位的资源值（多个则只用第一个），赋予目标玩家的通过数量指定的资源
 
 Protounit Modifier 原型单位修改器
-能够修改目标玩家的科技树中单位的属性，浮点型的属性则将数量除以1000，属性类型通过定时器参数来确定。数目效果：
+能够修改目标玩家的科技树中单位的属性，浮点型的属性则将数量除以1000。
+属性和取值在文本框中输入，并以非数字符号进行分隔。取值可以为负值，但必须为整数。
+数目效果：
 0 - 设置原型单位的属性值
 1 - 增加原型单位的属性值
 2 - 通过目标玩家的资源值，来设置原型单位的属性值。
 
-Object Modifier Selector 单位修改选择器
-筛选Object Modifier触发效果的单位列表。数目为0时，直接设置；为1时，则在原有的列表之后附加。最多支持256个单位。
-该效果须严格优先于Object Modifier效果，即前面的序号要大于后者的。
-
 Object Modifier 单位修改器
-在通过Object Modifier Selector指定了单位列表之后，来对它们的属性进行修改，修改后的单位会变得独立。
-参数的用法与Protounit Modifier类似。
+修改特定单位的属性。被修改的单位会独立化。参数的用法与Protounit Modifier类似。
 
 Create Units In Area 区域内建立单位
 单位会在通过区域参数指定的每一个地块中产生。数目为0时，受到地形和体积的限制，为1时则不受限制。
@@ -59,6 +56,9 @@ WAIFor Unit Typer WAIFor 打字机
 Focus Object 聚焦单位
 类似于原触发效果“改变视角”，不同在于它的目标不是固定点，而是目标单位。数目0、1可以指定改变视角的类型为移动、切换。
 
+Instant Garrison 直接驻扎
+将指定的源单位直接驻扎进目标单位中。驻扎后单位图像不会消失，但无法点击。另外该效果会使原位置的视野永久保留。
+
 
 附：原型单位属性（使用AGE 20151211的名称）
 
@@ -67,7 +67,7 @@ Focus Object 聚焦单位
   001   (s)   10   ID 1
   002   (s)   10   ID 2
   003   (s)   10   ID 3
-  004   (s)   10   Language DLL Name
+  004   (s)   10 **Language DLL Name
   005   (s)   10   Language DLL Creation
   006   (l)   10   Hotkey
   007   (l)   10   Language DLL Help
@@ -91,30 +91,30 @@ Focus Object 聚焦单位
   025   (f)   60  *Search Radius
   026   (f)   60  *Max Range
   027   (f)   60  *Min Range
-  028   (f)   60   Displayed Range
-  029   (s)   60   Displayed Attack
-  030   (s)   60   Frame Delay
+  028   (f)   60 **Displayed Range
+  029   (s)   60 **Displayed Attack
+  030   (s)   60 **Frame Delay
   031   (s)   60  *Accuracy Percent
   032   (f)   60   Accuracy Error Radius
   033   (f)   60  *Reload Time
   034   (f)   60   Displayed Reload Time
   035   (f)   60  *Blast Radius
-  036   (b)   60   Blast Attack Level
+  036   (b)   60 **Blast Attack Level
   037   (s)   60  *Default Armor
   038   (s)   60  *Damage Terrain Restriction
-  039   (s)   60   Displayed Melee Armor
-  040   (s)   70   Displayed Pierce Armor
+  039   (s)   60 **Displayed Melee Armor
+  040   (s)   70 **Displayed Pierce Armor
   041   (b)   60   Blast Defense Level
   042   (s)   10  *Resource Capacity
   043   (f)   10   Resource Decay
   044   (f)   60  *Work Rate
   045   (b)   30  *Garrison Capacity
-  046   (b)   80   Garrision Type
+  046   (b)   80 **Garrision Type
   047   (f)   80  *Garrision Heal Rate
-  048   (s)   60   Projectile Unit
+  048   (s)   60 **Projectile Unit
   049   (l)   70   Missle  Dupl.  Unit
   050   (l)   70   Charging Graphic
-  051   (b)   70   Charging Mode
+  051   (b)   70 **Charging Mode
   052   (f)   70  *Total Missiles
   053   (l)   70  *Max  Total  Missiles
   054   (f)   70   Missile Spawning Area.1
@@ -139,7 +139,7 @@ Focus Object 聚焦单位
   073   (b)   60   Tower Mode
   074   (b)   80   Adjacent Mode
   075   (b)   80   Built: Vanishes
-  076   (b)   70   Hero Mode
+  076   (b)   70 **Hero Mode
   077   (b)   10   Placement Mode
   078   (b)   10   Hill Mode
   079   (b)   10   Fog Visibility
@@ -151,9 +151,9 @@ Focus Object 聚焦单位
   085   (b)   10   Edible Meat?
   086   (b)   60   Task  Swap  ID
   087   (b)   10   Unit Attribute
-  088   (b)   10   Civilization
-  089   (s)   10   Attribute Piece
-  090   (s)   10   Dead Unit
+  088   (b)   10 **Civilization
+  089   (s)   10 **Attribute Piece
+  090   (s)   10 **Dead Unit
   091   (s)   10   Placement Terrain.1
   092   (s)   10   Placement Terrain.2
   093   (s)   10   Placement Side Terrain.1
@@ -188,10 +188,10 @@ Focus Object 聚焦单位
   122   (f)   30   Rotations in Radians.3
   123   (f)   30   Rotations in Radians.4
   124   (f)   30   Rotations in Radians.5
-  125   (b)   10   Command ID
-  126   (s)   70   Train Location
+  125   (b)   10 **Command ID
+  126   (s)   70 **Train Location
   127   (s)   70  *Train Time
-  128   (b)   70   Train Button
+  128   (b)   70 **Train Button
   129   (s)   10   Storage.Type.1
   130   (s)   10   Storage.Type.2
   131   (s)   10   Storage.Type.3
@@ -246,10 +246,10 @@ Focus Object 聚焦单位
   180   (f)   10   Unknown 3A
   181   (b)   30   Unknown 11
   182   (b)   30   Unknown 11
-  183   (f)   70   Unknown 26
+  183   (f)   70 **Unknown 26
   184   (f)   70   Unknown 27
   185   (b)   80   Unknown Type
-  186   (b)   80   Unknown 33
+  186   (b)   80 **Unknown 33
   187   (f)   80   Wonder Timer?
   188   (w)   70  *Melee Attack
   189   (w)   70  *Pierce Attack
@@ -264,4 +264,4 @@ f - 浮点型（实数，设置时除以1000）
 g - 图像（短整型，只可设置，编号需要参看AGE）
 v - 声音（与图像类似）
 
-许多属性是无法在游戏存档中保留的，除非单位被独立化。只有带“*”号的属性可以保留。
+许多属性是无法在游戏存档中保留的，除非单位被独立化。只有带“*”或“**”号的属性可以保留。“**”为UserPatch 1.5的新特性。

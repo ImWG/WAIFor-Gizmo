@@ -151,8 +151,8 @@ __Protounit_Table__ Macro
 	ATTR T_FLT, 30, 0F4H ;Rotations in Radians.4
 	ATTR T_FLT, 30, 0F8H ;Rotations in Radians.5
 	ATTR T_CHR, 10, 097H ;Command ID
-	ATTR T_INT, 70, 182H ;Train Location
-	ATTR T_INT, 70, 184H ;Train Time
+	ATTR T_INT, 70, 184H ;Train Location
+	ATTR T_INT, 70, 182H ;Train Time
 	ATTR T_CHR, 70, 186H ;Train Button
 	ATTR T_INT, 10, 072H ;Type.1
 	ATTR T_INT, 10, 074H ;Type.2

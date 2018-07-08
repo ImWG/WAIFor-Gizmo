@@ -1,6 +1,6 @@
 ;Do not modify this file!!!
 Easy Code 1.06.0.0016
-Begin ECProject = GizmoModule
+Begin ECProject = Triggers
   EasyCodeProject=0
   FileType=1
   Processor=.486
@@ -20,7 +20,7 @@ Begin ECProject = GizmoModule
   Masm32Unicode=0
   StartupWindow=Module
   Title=Easy Code Masm classic project
-  Resources=GizmoModule.ecr
+  Resources=Triggers.ecr
   Module=Module.asm
   Module=F:\AOE2s\lab\WAIFOR~1\WAIFOR~2\Protounits.asm
   Include=Kernel32.inc

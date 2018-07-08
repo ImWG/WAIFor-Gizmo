@@ -20,11 +20,12 @@ Gizmo_KeyDirectAddresses DB 'DirectAddresses', 0
 Gizmo_KeyJumps           DB 'Jumps', 0
 
 ; Conditions and Effects
+; Marked with ! should be adjusted by newer userpatch
 MAX_COUNT Equ 256
 Gizmo_EffectList@   Equ 007DD41FH
 Gizmo_EffectSpace@  Equ 007DD20CH
 Gizmo_EffectSpace2@ Equ 007DD275H
-Gizmo_EffectInputs@ Equ 007D8DFBH
+Gizmo_EffectInputs@ Equ 007D8E01H ;! 007D8DFBH
 Gizmo_Effect@       Equ 004375F8H
 ;Gizmo_ConditionList@
 Gizmo_ConditionSpace@  Equ Offset Gizmo_A_ConditionSpace + 1  ;007DD205H
@@ -34,10 +35,10 @@ Gizmo_Condition@       Equ 00436B38H
 
 ; Adaptions
 Gizmo_A_ConditionOrigin@ Equ 007DD205H
-Gizmo_A_ConditionList@   Equ 004E1F4AH
+Gizmo_A_ConditionList@   Equ 007E2644H ;! 004E1F4AH
 Gizmo_A_ConditionSpace@  Equ 007DD204H
 Gizmo_A_ConditionSpace2@ Equ 007DD246H
-Gizmo_A_ConditionInputs@ Equ 007E2096H
+Gizmo_A_ConditionInputs@ Equ 007E208AH ;! 007E2096H
 
 
 .Data?
@@ -52,6 +53,7 @@ Gizmo_ConditionOrigin DD ? ; = #Conditions + 1
 
 Gizmo_Addresses DD Offset Gizmo_1, Offset Gizmo_2, Offset Gizmo_3, Offset Gizmo_4
 	DD Offset Gizmo_A_1, Offset Gizmo_A_2, Offset Gizmo_A_3, Offset Gizmo_A_4, Offset Gizmo_A_5
+	DD GizmoTextLoader_1, GizmoTextLoader_2
 	DD 0
 Gizmo_Addresses2 DD Offset Gizmo_01, Offset Gizmo_02, Offset Gizmo_A_01, 0
 
@@ -81,19 +83,21 @@ Gizmo_EffectList: ; 007DD420H
 .While DWord Ptr Ds:[Esi] != 0
 	Push Ebx
 	Mov Eax, DWord Ptr Ds:[Esi]
+	Mov Ecx, Eax
+	Call GizmoTextLoader
+	Mov Ecx, Ebp
 	Push Eax
 Gizmo_2:
 	FakeCall 00550840H
 	Inc Ebx
 	Add Esi, 4
-	Mov Ecx, Ebp
 .EndW
-
+	Mov Ecx, Ebp
 	Pop Ebp
 	Pop Ebx
 	Pop Esi
 Gizmo_1:
-	FakeJmp 004E1F10H
+	FakeJmp 004E1F50H ; 004E1F10H
 
 
 Gizmo_EffectInputs: ; ESI = Source, [ESI+0c] = Input Table addr.
@@ -269,6 +273,99 @@ Gizmo_02:
 	Jmp DWord Ptr Ds:[Offset Gizmo_TableConditions + Eax * 4]
 
 
+
+; ecx = string addr.
+; eax = result
+GizmoTextLoader:
+	Push Ebx
+	Push Edi
+	Push Esi
+	Push Ebp
+
+	Mov Esi, Ecx
+	Mov Al, Byte Ptr Ds:[Esi]
+	Cmp Al, '`'
+.If !Zero?
+	Mov Eax, Esi
+	Pop Ebp
+	Pop Esi
+	Pop Edi
+	Pop Ebx
+	Retn
+.EndIf
+	Inc Esi
+	Sub Esp, 100H ; 8 language ids at most (20h per)
+	Mov Ebp, Esp
+	Xor Ebx, Ebx
+	Mov Edx, Esi
+GizmoTextLoader_ScanLoop: ; Count Strings
+	Mov Cl, Byte Ptr Ds:[Edx]
+	Test Cl, Cl
+	Je GizmoTextLoader_ScanOver
+	Cmp Cl, '%'
+.If Zero?
+	Inc Edx
+	Mov Cl, Byte Ptr Ds:[Edx]
+	Test Cl, Cl
+	Je GizmoTextLoader_ScanOver
+	Cmp Cl, 's'
+	.If Zero?
+		Inc Ebx
+	.EndIf
+.EndIf
+	Inc Edx
+	Jmp GizmoTextLoader_ScanLoop
+GizmoTextLoader_ScanOver: ; Load Strings
+	Test Ebx, Ebx
+	Je GizmoTextLoader_NoDll
+	Inc Edx
+	Push Esi
+	Push Ebx
+	Mov Edi, Ebp
+.Repeat
+	Movzx Eax, Word Ptr Ds:[Edx]
+	Push Edx
+	Push 20H ; arg3-max size
+	Push Edi ; arg2-target
+	Push Eax ; arg1-dll id
+GizmoTextLoader_1:
+	FakeCall 00562CB0H
+	Pop Edx
+	Add Edi, 20H
+	Add Edx, 2
+	Dec Ebx
+.Until Zero?
+
+	Mov Ebx, DWord Ptr Ss:[Esp] ; Sprintf
+	Lea Ecx, [Ebx - 1]
+	Shl Ecx, 5
+	Lea Edi, [Ebp + Ecx]
+.Repeat
+	Push Edi
+	Sub Edi, 20H
+	Dec Ebx
+.Until Zero?
+	Push Esi
+	Push Offset StringBuffer
+GizmoTextLoader_2:
+	FakeCall 0061442BH
+	Mov Esp, Ebp
+	Mov Eax, Offset StringBuffer
+GizmoTextLoader_Skip2:
+	Add Esp, 100H
+GizmoTextLoader_Skip:
+	Pop Ebp
+	Pop Esi
+	Pop Edi
+	Pop Ebx
+	Retn
+
+GizmoTextLoader_NoDll:
+	Mov Eax, Esi
+	Jmp GizmoTextLoader_Skip2
+
+
+
 Align 4
 GizmoInitialize Proc Uses Esi Edi Ebx
 	Local @Space
@@ -434,6 +531,13 @@ GizmoPatchLoader Proc Uses Esi, _hModule
 	Invoke  WritePatches, Eax
 .EndIf
 
+	; Write Direct Addresses
+	Invoke GetProcAddress, _hModule, Addr Gizmo_KeyDirectAddresses
+	Test Eax, Eax
+.If !Zero?
+	Invoke  WriteDirectAddresses, Eax
+.EndIf
+
 	; Write Addresses
 	Invoke GetProcAddress, _hModule, Addr Gizmo_KeyAddress
 	Test Eax, Eax
@@ -446,13 +550,6 @@ GizmoPatchLoader Proc Uses Esi, _hModule
 	Test Eax, Eax
 .If !Zero?
 	Invoke  WriteAddresses2, Eax
-.EndIf
-
-	; Write Direct Addresses
-	Invoke GetProcAddress, _hModule, Addr Gizmo_KeyDirectAddresses
-	Test Eax, Eax
-.If !Zero?
-	Invoke  WriteDirectAddresses, Eax
 .EndIf
 
 	; Write Jumps

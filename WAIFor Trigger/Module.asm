@@ -7,68 +7,114 @@ Include	Protounits.asm
 ; NOTE: If you don't create either conditions nor effects, you can remove them both in ASM and DEF files.
 
 ; Effects
-__EffectCount  DD 12
-__EffectNames  DD Offset Name1, Offset Name2, Offset Name3, Offset Name4, Offset Name5, Offset Name6
-		DD Offset Name7, Offset Name8, Offset Name9, Offset Name10, Offset Name11, Offset Name12
-; Inputs:Dword, Necessary Inputs:Dword
-__EffectInputs DD INE_TEXT + INE_FROMPLAYER + INE_RESOURCE, 0
-		DD INE_RESOURCE + INE_FROMPLAYER + INE_TOPLAYER + INE_QUANTITY + INE_NUMBER + INE_DIPLOMACY, 0
-		DD INE_TEXT + INE_FROMPLAYER, 0
-		DD INE_TEXT + INE_FROMPLAYER, 0
-		DD INE_QUANTITY + INE_PROTOUNIT + INE_UNIT_FILTER + INE_FROMPLAYER + INE_TOPLAYER + INE_NUMBER, 0
-		DD INE_QUANTITY + INE_TIMER + INE_PROTOUNIT + INE_TOPLAYER + INE_NUMBER, INE_PROTOUNIT + INE_TOPLAYER
-		DD INE_PROTOUNIT_FILTER + INE_UNIT_FILTER + INE_NUMBER, 0
-		DD INE_TIMER + INE_QUANTITY + INE_NUMBER + INE_TOPLAYER, 0
-		DD INE_QUANTITY + INE_PROTOUNIT + INE_FROMPLAYER + INE_AREA + INE_NUMBER, INE_PROTOUNIT + INE_FROMPLAYER + INE_AREA
-		DD INE_QUANTITY + INE_PROTOUNIT_FILTER + INE_UNIT_FILTER + INE_NUMBER, 0
-		DD INE_TEXT + INE_PROTOUNIT + INE_FROMPLAYER + INE_TARGET, INE_PROTOUNIT + INE_FROMPLAYER + INE_TARGET
-		DD INE_TOPLAYER + INE_PROTOUNIT + INE_FROMPLAYER + INE_UNIT_FILTER + INE_NUMBER, 0
+__EffectCount  DD 17
+__EffectNames  DD Offset Name1, Offset Name2, Offset Name3, Offset Name4, Offset Name5, Offset Name6, Offset Name7, Offset Name8
+		DD Offset Name9, Offset Name10, Offset Name11, Offset Name12, Offset Name13, Offset Name14, Offset Name15, Offset Name16
+		DD Offset Name17
 
-__Effects      DD Offset ChoiceBox
-		DD Offset ResModifier
-		DD Offset SaveResources
-		DD Offset LoadResources
-		DD Offset SetResourceStorage
-		DD Offset Protounit
-		DD Offset ModifierSelect
-		DD Offset Modifier
-		DD Offset CreateUnitsInArea
-		DD Offset ChangeObject
-		DD Offset WAIForTyper
-		DD Offset FocusObject
+; Inputs:Dword, Necessary Inputs:Dword
+__EffectInputs DD INE_TEXT + INE_FROMPLAYER + INE_RESOURCE, 0 ; ChoiceBox
+		DD INE_RESOURCE + INE_FROMPLAYER + INE_TOPLAYER + INE_QUANTITY + INE_NUMBER + INE_DIPLOMACY, 0 ; ResModifier
+		DD INE_TEXT + INE_FROMPLAYER, 0 ; SaveResources
+		DD INE_TEXT + INE_FROMPLAYER, 0 ; LoadResources
+		DD INE_QUANTITY + INE_PROTOUNIT + INE_UNIT_FILTER + INE_FROMPLAYER + INE_TOPLAYER + INE_NUMBER, 0 ; SetResourceStorage
+		DD INE_TEXT + INE_PROTOUNIT + INE_FROMPLAYER + INE_NUMBER, INE_PROTOUNIT + INE_FROMPLAYER ; Protounit
+		DD INE_TEXT + INE_NUMBER + INE_UNIT_FILTER + INE_FROMPLAYER + INE_PROTOUNIT, 0 ; Modifier
+		DD INE_QUANTITY + INE_PROTOUNIT + INE_FROMPLAYER + INE_AREA + INE_NUMBER, INE_PROTOUNIT + INE_FROMPLAYER + INE_AREA ; CreateUnitsInArea
+		DD INE_QUANTITY + INE_PROTOUNIT_FILTER + INE_UNIT_FILTER + INE_NUMBER, 0 ; ChangeObject
+		DD INE_TEXT + INE_PROTOUNIT + INE_FROMPLAYER + INE_TARGET, INE_PROTOUNIT + INE_FROMPLAYER + INE_TARGET ; WAIForTyper
+		DD INE_TOPLAYER + INE_PROTOUNIT + INE_FROMPLAYER + INE_UNIT_FILTER + INE_NUMBER, 0 ; FocusObject
+		DD INE_PROTOUNIT_FILTER + INE_UNIT_FILTER + INE_TARGET, 0 ; InstantGarrison
+		DD INE_AISIGNAL + INE_QUANTITY, 0 ; PlayDrsSound
+		DD INE_PROTOUNIT_FILTER + INE_UNIT_FILTER + INE_QUANTITY + INE_NUMBER, 0 ; RotateUnit
+		DD INE_PROTOUNIT_FILTER + INE_UNIT_FILTER + INE_QUANTITY + INE_NUMBER, 0 ; SetAttachGraphic
+		DD INE_AREA + INE_QUANTITY, INE_AREA ; SetTerrain
+		DD INE_PROTOUNIT_FILTER + INE_UNIT_FILTER + INE_TARGET + INE_NUMBER, 0 ; CloneObject
+
+
+__Effects      DD ChoiceBox
+		DD ResModifier
+		DD SaveResources
+		DD LoadResources
+		DD SetResourceStorage
+		DD Protounit
+		DD Modifier
+		DD CreateUnitsInArea
+		DD ChangeObject
+		DD WAIForTyper
+		DD FocusObject
+		DD InstantGarrison
+		DD PlayDrsSound
+		DD RotateUnit
+		DD SetAttachGraphic
+		DD SetTerrain
+		DD CloneObject
 
 ; Conditions
-__ConditionCount  DD 0
+__ConditionCount  DD 1
 __ConditionNames  DD Offset CName1
-__ConditionInputs DD INC_FROMPLAYER + INC_QUANTITY, 0
-__Conditions      DD Offset Civilization
+__ConditionInputs DD 0, 0
+__Conditions      DD TestCondition
 
 ; Address List To Change (Offset 1, For FakeJmp and FakeCall)
-__Addresses    DD Offset ChangeIcon_1, Offset WAIForTyper_1, Offset CreateUnitsInArea_1, Offset CreateUnitsInArea_2
-		DD Offset ChangeObject_1, Offset ChangeObject_2, Offset ChangeObject_3, Offset ChangeObject_4
-		DD Offset FocusObject_1, Offset FocusObject_2, Offset Modifier_1, 0
+__Addresses    DD ChoiceBox_1, WAIForTyper_1, CreateUnitsInArea_1, CreateUnitsInArea_2
+		DD ChangeObject_1, ChangeObject_2, ChangeObject_3, ChangeObject_4
+		DD FocusObject_1, FocusObject_2, Modifier_1, Protounit_Image_1, SetTerrain_1
+		DD RotateUnit_1, RotateUnit_2, RotateUnit_3, PlayDrsSound_1, PlayDrsSound_2, PlayDrsSound_3
+		DD SetAttachGraphic_1, SetAttachGraphic_2, CloneObject_1, CloneObject_2, CloneObject_3, CloneObject_4
+		DD 0
 ; Address List To Change (Offset 2, For Fake Conditional Jumps)
-__Addresses2   DD Offset Civilization_01, 0
+__Addresses2   DD 0
 
 
 .Data?
 
 .Data
 
-Name1 DB 'Show Choice Box', 0
+Name1 DB 'Show Choice Box (SP)', 0
 Name2 DB 'Resource Modifier', 0
 Name3 DB 'Save Resources To File', 0
 Name4 DB 'Load Resources From File', 0
 Name5 DB 'Set Resource Storage', 0
 Name6 DB 'Protounit Modifier', 0
-Name7 DB 'Object Modifier Selector', 0
-Name8 DB 'Object Modifier', 0
-Name9 DB 'Create Units In Area', 0
-Name10 DB 'Change/Replace Object', 0
-Name11 DB 'WAIFor Unit Typer', 0
-Name12 DB 'Focus Object', 0
+Name7 DB 'Object Modifier', 0
+Name8 DB 'Create Units In Area', 0
+Name9 DB 'Change/Replace Object', 0
+Name10 DB 'WAIFor Unit Typer', 0
+Name11 DB 'Focus Object', 0
+Name12 DB 'Instant Garrison', 0
+Name13 DB 'Play Internal Sound', 0
+Name14 DB 'Rotate Objects', 0
+Name15 DB 'Set Attaching Graphic', 0
+Name16 DB 'Set Terrain', 0
+Name17 DB 'Clone Object', 0
+CName1 DB 'Start / Load Saved Game', 0
 
-CName1 DB 'Civilization', 0
+;Name1 DB 'Show Choice Box (SP)', 0
+;Name2 DB '`%s %s %s', 0
+;	DW 9215, 9213, 9735
+;Name3 DB '%s %s', 0
+;	DW 9272, 9735
+;Name4 DB '`%s %s', 0
+;	DW 9276, 9735
+;Name5 DB '`%s %s', 0
+;	DW 9215, 9735
+;Name6 DB 'Protounit Modifier', 0
+;Name7 DB 'Object Modifier', 0
+;Name8 DB 'Create Units In Area', 0
+;Name9 DB 'Change/Replace Object', 0
+;Name10 DB 'WAIFor Unit Typer', 0
+;Name11 DB 'Focus Object', 0
+;Name12 DB 'Instant Garrison', 0
+;Name13 DB 'Play Internal Sound', 0
+;Name14 DB '`%s %s', 0
+;	DW 10106, 9733
+;Name15 DB 'Set Attaching Graphic', 0
+;Name16 DB '`%s %s', 0
+;	DW 9215, 10011
+;Name17 DB 'Clone Object', 0
+;CName1 DB 'Start / Load Saved Game', 0
+
 
 ResSavePattern DB '%s%s.res', 0
 
@@ -79,16 +125,17 @@ ASCIIPatterns DD 0000000H, 0401084H, 000014AH, 0AFABEAH, 0EA38AEH, 19D1173H, 1F2
 		DD 010BE2FH, 164D62EH, 114BE2FH, 0F8383EH, 042109FH, 0E8C631H, 0452A31H, 11DD631H, 1151151H, 0421151H, 1F1111FH, 0610846H, 1041041H, 0C4210CH, 0004544H, 1F00000H
 		DD 0000104H, 164B906H, 0E93842H, 0C10980H, 0E4B908H, 1C17A4CH, 042789CH, 064392EH, 1293842H, 0E21804H, 0642008H, 1251942H, 0E21086H, 15AD560H, 12949C0H, 0C94980H
 		DD 02749C0H, 08725C0H, 0211B40H, 0320980H, 1C27880H, 0E4A520H, 0454A40H, 0AAD6A0H, 0931920H, 0743929H, 0E22380H, 0C2088CH, 0421084H, 0622086H, 0045440H, 1FFFFFFH
+;SnowPatterns DB 1, 4, 2, 0, 0, 2, 0, 0, 0, 1, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 5, 5, 0, 0, 0, 5, 3
+;SnowTable DB 34, 33, 38, 32, 37 ; Snow Grass, Dirt, Road, Ice and all-Snow
+
 
 TestFloat DD 10.0
 TyperDelta DD 0.16666667
 TyperSize DD 1.0
 Rate360 DD 360.0
 Rate1000 DD 1000.0
-
-Align 4
-ModifierObjects DD 256 Dup(0)
-ModifierObjectCount DD 0
+RotationDelta DD 0.125
+Float2 DD 2.0
 
 
 .Code
@@ -102,44 +149,26 @@ DllEntryPoint EndP
 
 ; ==== Effects ====
 
-ChangeIcon:
-    Mov Eax, [Esp + 10H]
-    Xor Ebp, Ebp
-    Cmp Eax, Ebx
-    Jle ChangeIcon_back
-    Lea Ebx, [Esp + 94H]
 
-ChangeIcon_start:
-    Mov Esi, [Ebx]
-    Mov Eax, [Esi + 8]
-    Cmp Byte Ptr Ds:[Eax + 4], 46H
-    Jb ChangeIcon_end
-    Mov Ecx, Esi
-ChangeIcon_1:
-    FakeCall 004C6400H
-    Xor Edx, Edx
-    Mov Edx, [Edi + 10H]
-    Mov Ecx, [Esi + 8]
-    Mov Word Ptr Ds:[Ecx + 54H], Dx
-
-ChangeIcon_end:
-    Mov Eax, [Esp + 10H]
-    Inc Ebp
-    Add Ebx, 4
-    Cmp Ebp, Eax
-    Jl ChangeIcon_start
-
-ChangeIcon_back:
-    Pop Edi
-    Pop Esi
-    Pop Ebp
-    Mov Al, 1
-    Pop Ebx
-    Add Esp, 2034H
-    Retn 4
+__EffectPostfix__ Macro
+	Pop Edi
+	Pop Esi
+	Pop Ebp
+	Mov Al, 1
+	Pop Ebx
+	Add Esp, 2034H
+	Retn 4
+EndM
 
 
+; Show Choice Box (SP Only)
+; Resource - choice to send (0 is no, 1 is yes)
+; Player - resource owner
 ChoiceBox:
+	Mov Ecx, DWord Ptr Ds:[Plc]
+ChoiceBox_1:
+	FakeCall 005EAE90H
+.If Eax == 1
 	Sub Esp, 100H
 	Invoke  GetActiveWindow
 	Mov Ebp, Eax
@@ -162,13 +191,8 @@ ChoiceBox:
 	Fstp DWord Ptr Ds:[Esi + Ecx * 4]
 .EndIf
 	Add Esp, 100H
-	Pop Edi
-    Pop Esi
-    Pop Ebp
-    Mov Al, 1
-    Pop Ebx
-    Add Esp, 2034H
-    Retn 4
+.EndIf
+	__EffectPostfix__
 
 
 ; Resource Modifier
@@ -423,11 +447,78 @@ WAIForTyper_1:
 ; 1 - Add attribute
 ; 2 - Set attribute by resource(by quantity)
 Protounit:
+	Push 0 ; Mode:Techtree
+	Mov Esi, DWord Ptr Ds:[Edi + 6CH]
+	Sub Esp, 4H
+	Jmp Modifier_Loop
+
+; Object Modifier
+; 0 - Set attribute
+; 1 - Add attribute
+; 2 - Set attribute by resource(by quantity)
+Modifier:
+	Lea Esi, [Esp + 94H]
+	Mov Ebp, DWord Ptr Ds:[Esp + 10H]
+	Cmp Ebp, Ebx
+	Jle Modifier_
+
+	Mov Ebx, Ebp
+.Repeat
+	Mov Ecx, DWord Ptr Ds:[Esi]
+	Mov Eax, DWord Ptr Ds:[Ecx + 8H]
+.If Byte Ptr Ds:[Eax + 4] >= 70
+Modifier_1:
+	FakeCall 004C6400H
+.EndIf
+	Add Esi, 4
+	Dec Ebx
+.Until Zero?
+	Lea Esi, [Esp + 94H]
+	push esi
+	Mov Esi, DWord Ptr Ds:[Edi + 6CH]
+	Sub Esp, 4H
+Modifier_Loop:
+	Xor Eax, Eax
+	Xor Ecx, Ecx
+	Mov Cl, Byte Ptr Ds:[Esi]
+.While Cl >= '0' && Cl <= '9'
+	Sub Cl, '0'
+	IMul Eax, 10
+	Add Eax, Ecx
+	Inc Esi
+	Mov Cl, Byte Ptr Ds:[Esi]
+.EndW
+	Mov DWord Ptr Ds:[Edi + 3CH], Eax
+	Xor Eax, Eax
+	Inc Esi
+	Mov Cl, Byte Ptr Ds:[Esi]
+	Xor Bl, Bl
+.If Cl == '-'
+	Mov Bl, 1
+	Inc Esi
+	Mov Cl, Byte Ptr Ds:[Esi]
+.EndIf
+.While Cl >= '0' && Cl <= '9'
+	Sub Cl, '0'
+	IMul Eax, 10
+	Add Eax, Ecx
+	Inc Esi
+	Mov Cl, Byte Ptr Ds:[Esi]
+.EndW
+	Test Bl, Bl
+.If !Zero?
+	Neg Eax
+.EndIf
+	Mov DWord Ptr Ds:[Edi + 10H], Eax
+	Mov DWord Ptr Ss:[Esp], Esi
+	Mov Esi, DWord Ptr Ss:[Esp + 4H]
+
+Modifier_:
 	Mov Ebx, DWord Ptr Ds:[Edi + 3CH] ; ebx = Attribute ID
 	Mov Ecx, DWord Ptr Ss:[Esp + 20H] ; Player
-	Sub Esp, 4H
-	Push 0 ; Mode:Techtree
-Protounit_:
+	Push Ebp
+	Push Esi
+
 	Push Edi ; Trigger
 	Mov Eax, DWord Ptr Ds:[Edi + 64H] ; Mode
 .If Eax > 2
@@ -442,13 +533,33 @@ Protounit_:
 	Xor Edx, Edx
 	Mov Dx, Bx ; Offset
 	Shr Ebx, 10H
-	Xor Eax, Eax
-	Mov Al, Bl ; Min "Type"
+	Mov Eax, DWord Ptr Ss:[Esp + 8H]
+	Test Eax, Eax
+	.If !Zero?
+		.If Bl < 70
+			Mov Bl, 70
+		.EndIf
+	.EndIf
+	Movzx Eax, Bl ; Min "Type"
 	Push Eax
 	Push Edx
 	Shr Ebx, 8H
-
 	Call DWord Ptr Ds:[Ebx * 4 + Offset Protounit_CallTable]
+
+	Mov Esi, DWord Ptr Ss:[Esp]
+	Mov Cl, Byte Ptr Ds:[Esi]
+	Test Cl, Cl
+	Je Modifier_End
+.If Cl < '0' || Cl > '9'
+	.Repeat
+		Inc Esi
+		Mov Cl, Byte Ptr Ds:[Esi]
+	.Until Cl >= '0' && Cl <= '9'
+	Jmp Modifier_Loop
+.EndIf
+Modifier_End:
+	add esp, 8h
+
 	Pop Edi
 	Pop Esi
 	Pop Ebp
@@ -456,34 +567,6 @@ Protounit_:
 	Pop Ebx
 	Add Esp, 2034H
 	Retn 4
-
-
-; Object Modifier
-; 0 - Set attribute
-; 1 - Add attribute
-; 2 - Set attribute by resource(by quantity)
-Modifier:
-	Mov Ebx, ModifierObjectCount
-	Cmp Ebx, 0
-	Jle Modifier_
-	Mov Esi, Offset ModifierObjects
-.Repeat
-	Mov Ecx, DWord Ptr Ds:[Esi]
-	Mov Eax, DWord Ptr Ds:[Ecx + 8H]
-.If Byte Ptr Ds:[Eax + 4] >= 70
-Modifier_1:
-	FakeCall 004C6400H
-.EndIf
-	Add Esi, 4
-	Dec Ebx
-.Until Zero?
-Modifier_:
-	Mov Ebx, DWord Ptr Ds:[Edi + 3CH] ; ebx = Attribute ID
-	Mov Ecx, DWord Ptr Ss:[Esp + 20H] ; Player
-	Mov Eax, ModifierObjectCount
-	Push Eax
-	Push Offset ModifierObjects
-	Jmp Protounit_
 
 
 __Protounit_Functions__
@@ -613,7 +696,7 @@ ChangeObject:
 	Mov Eax, DWord Ptr Ss:[Esp + 10H]
 	Xor Esi, Esi
 	Cmp Eax, Ebx
-	Jl ChangeObject_
+	Jle ChangeObject_
 	Mov Ebp, Eax
 	Mov Esi, DWord Ptr Ss:[Esp + 18H]
 
@@ -814,7 +897,7 @@ FocusObject:
 	Push Ecx
 	Fld DWord Ptr Ds:[Ebx + 38H]
 	Fstp DWord Ptr Ss:[Esp]
-	Mov Ecx, DWord Ptr Ss:[Esp + 2CH]
+	Mov Ecx, DWord Ptr Ss:[Esp + 28H]
 FocusObject_1:
 	FakeCall 005580D0H
 .Else
@@ -825,7 +908,7 @@ FocusObject_1:
 	Push Ecx
 	Fld DWord Ptr Ds:[Ebx + 38H]
 	Fstp DWord Ptr Ss:[Esp]
-	Mov Ecx, DWord Ptr Ss:[Esp + 2CH]
+	Mov Ecx, DWord Ptr Ss:[Esp + 2cH]
 FocusObject_2:
 	FakeCall 00555C30H
 .EndIf
@@ -839,69 +922,779 @@ FocusObject_Skip:
 	Retn 4
 
 
-; Object Modifier Selector
-; 0 - Set objects
-; 1 - Append objects
-; Note: Must be in order (postfix figures should be less than modifier effects)
-ModifierSelect:
-	Mov Esi, [Esp + 10H]
-	Xor Eax, Eax
-	Mov Edx, [Edi + 64H]
-	Mov Edi, Offset ModifierObjects
-.If Edx == 1
-	Cmp Esi, Ebx
-	Jle ModifierSelect_Skip
-
-	Mov Ebp, ModifierObjectCount
-	Lea Edi, [Edi + Ebp * 4]
-.Else
-	Xor Ebp, Ebp
-	Cmp Esi, Ebx
-	Jle ModifierSelect_End
+; Instant Garrison
+InstantGarrison:
+	Mov Eax, DWord Ptr Ss:[Esp + 10H]
+	Xor Esi, Esi
+	Cmp Eax, Ebx
+	Jle InstantGarrison_Skip
+	Lea Ebp, [Esp + 94H]
+	Mov Esi, DWord Ptr Ss:[Esp + 10H]
+	Mov Edx, DWord Ptr Ds:[Esp + 24H]
+	Test Edx, Edx
+.If !Zero?
+	.Repeat
+		Mov Ecx, DWord Ptr Ss:[Ebp]
+		Mov Edx, DWord Ptr Ds:[Esp + 24H]
+		Push Ecx
+		Mov Eax, DWord Ptr Ds:[Edx]
+		Mov Ecx, Edx
+		Call DWord Ptr Ds:[Eax + 0E8H] ; 4D27A0H
+		Add Ebp, 4H
+		Dec Esi
+	.Until Zero?
 .EndIf
-	Lea Ebx, [Esp + 94H]
-ModifierSelect_Loop:
-	Mov Ecx, [Ebx]
-	Mov [Edi], Ecx
-	Inc Eax
-	Inc Ebp
-	Add Edi, 4
-	Add Ebx, 4
+InstantGarrison_Skip:
+	__EffectPostfix__
 
-	Cmp Eax, Esi
-	Jge ModifierSelect_End
-	Cmp Ebp, 256
-	Jl ModifierSelect_Loop
-ModifierSelect_End:
-	Mov ModifierObjectCount, Ebp
-ModifierSelect_Skip:
+
+; Rotate Objects
+; 0 - Set angle by degrees
+; 1 - Add angle by degrees
+; 2 - Set angle by image
+; 3 - Add angle by image
+; 4 - Set image angle by degrees
+; 5 - Add image angle by degrees
+; 6 - Set image angle by image
+; 7 - Add image angle by image
+; 8 - Set frame index
+; 9 - Add frame index (won't be out of frames)
+; In adding effects except 5, setting quantity to 0 leads a random result.
+RotateUnit:
+    Mov Ebp, [Esp + 10H]
+    Cmp Ebp, Ebx
+    Jle RotateUnit_Back
+    Lea Ebx, [Esp + 94H]
+
+	Mov Eax, [Edi + 64H]
+	Mov Ecx, Eax
+	Shr Eax, 1
+	Cmp Eax, 4
+	Je RotateUnit_Frame
+
+	Push Ecx
+	Push DWord Ptr Ds:[Edi + 10H]
+	Test Byte Ptr Ds:[Esp + 4], 2
+	Je RotateUnit_ByAngle
+
+; === By Image ===
+
+RotateUnit_II: ; Image By Image
+	Mov Esi, [Ebx]
+    Mov Edx, [Esi + 10H] ; Graphic
+    Test Edx, Edx
+.If !Zero?
+	Mov Al, Byte Ptr Ds:[Esp]
+	Test Byte Ptr Ds:[Esp + 4], 1
+	.If !Zero?
+		Test Al, Al
+		.If Zero?
+RotateUnit_3:
+			FakeCall SUB_RANDOM
+		.Else
+			Add Al, Byte Ptr Ds:[Esi + 35H] ; Current Angle
+		.EndIf
+		Movzx Ax, Al
+		Mov Cx, Word Ptr Ds:[Edx + 60H]
+		Cwd
+		IDiv Cx
+		Mov Al, Dl
+	.EndIf
+	Mov Byte Ptr Ds:[Esi + 35H], Al
+.EndIf
+    Add Ebx, 4
+    Dec Ebp
+    Jg RotateUnit_II
+
+	Test Byte Ptr Ds:[Esp + 4], 4
+	Jne RotateUnit_II_
+	Lea Ebx, [Esp + 09CH]
+	Mov Ebp, [Esp + 18H]
+RotateUnit_AI: ; Angle By Image
+	Mov Esi, [Ebx]
+    Mov Edx, [Esi + 10H]
+    Test Edx, Edx
+.If !Zero?
+	Movzx Eax, Byte Ptr Ds:[Esi + 35H]
+	Push Eax
+	Fild DWord Ptr Ss:[Esp]
+	Fidiv Word Ptr Ds:[Edx + 60H]
+	Fadd DWord Ptr Ds:[RotationDelta]
+	Fldpi
+	Fldpi
+	Faddp St(1), St
+	Fmulp St(1), St
+	Fstp DWord Ptr Ss:[Esp]
+	Mov Ecx, Esi
+	Mov Eax, [Esi]
+	Call DWord Ptr Ds:[Eax + 0C0H]
+.EndIf
+    Add Ebx, 4
+    Dec Ebp
+    Jg RotateUnit_AI
+RotateUnit_II_:
+	Add Esp, 8H
+RotateUnit_Back:
+	__EffectPostfix__
+
+RotateUnit_Frame:
+	And Ecx, 1
+	Push Ecx
+    Push DWord Ptr Ds:[Edi + 10H]
+RotateUnit_Frame_Loop:
+    Mov Esi, [Ebx]
+    Mov Eax, [Esi + 10H]
+    Test Eax, Eax
+.If !Zero?
+	Mov Edx, DWord Ptr Ss:[Esp]
+	Mov Ecx, DWord Ptr Ss:[Esp + 4]
+	Test Ecx, Ecx
+	.If !Zero?
+		Test Edx, Edx
+		.If Zero?
+RotateUnit_1:
+			FakeCall SUB_RANDOM
+		.Else
+			Mov Edi, Edx
+			Mov Ecx, [Esi + 18H]
+			Mov Edx, [Ecx]
+			Mov Eax, [Esi + 10H]
+			Push Eax
+			Call DWord Ptr Ds:[Edx + 4]
+			Add Eax, Edi
+		.EndIf
+		Mov Ecx, [Esi + 10H]
+		Movzx Ecx, Word Ptr Ds:[Ecx + 5EH]
+		Cdq
+		IDiv Ecx
+		Mov Eax, [Esi + 10H]
+	.EndIf
+	Mov Ecx, [Esi + 18H]
+	Mov Edi, [Ecx]
+	Push Edx
+	Push Eax
+	Call DWord Ptr Ds:[Edi + 1CH]
+.EndIf
+    Add Ebx, 4
+    Dec Ebp
+    Jg RotateUnit_Frame_Loop
+    Add Esp, 8
+RotateUnit_Frame_Back:
+	__EffectPostfix__
+
+RotateUnit_ByAngle: ; === By Angle ===
+	Test Byte Ptr Ds:[Esp + 4], 4
+	Je RotateUnit_AA_
+
+RotateUnit_IA: ; Image By Angle
+	Mov Esi, [Ebx]
+    Mov Edx, [Esi + 10H] ; Graphic
+    Test Edx, Edx
+.If !Zero?
+	Fild DWord Ptr Ds:[Esp]
+	Fdiv DWord Ptr Ds:[Rate360]
+	Fimul Word Ptr Ds:[Edx + 60H]
+	Sub Esp, 4
+	Fistp Word Ptr Ds:[Esp]
+	Pop Eax
+	Movsx Eax, Ax
+	Test Byte Ptr Ds:[Esp + 4], 1
+	.If !Zero?
+		Xor Cx, Cx
+		Movzx Cx, Byte Ptr Ds:[Esi + 35H]
+		Add Ax, Cx
+	.EndIf
+	Mov Cx, Word Ptr Ds:[Edx + 60H]
+	Cwd
+	IDiv Cx
+	Mov Al, Dl
+	Mov Byte Ptr Ds:[Esi + 35H], Al
+.EndIf
+    Add Ebx, 4
+    Dec Ebp
+    Jg RotateUnit_IA
+	Add Esp, 8H
+	__EffectPostfix__
+
+RotateUnit_AA_: ; Angle By Angle
+	Mov Ecx, 360
+	Cdq
+	IDiv Ecx
+	Mov DWord Ptr Ds:[Esp], Edx
+	Fild DWord Ptr Ds:[Esp]
+	Fdiv DWord Ptr Ds:[Rate360]
+	Test Byte Ptr Ds:[Esp + 4], 1
+	.If Zero? ; If is set
+		Fadd DWord Ptr Ds:[RotationDelta]
+	.EndIf
+	Fldpi
+	Fldpi
+	Faddp St(1), St
+	Fmulp St(1), St
+	Fstp DWord Ptr Ss:[Esp]
+RotateUnit_AA:
+	Mov Esi, [Ebx]
+    Mov Edx, [Esi + 10H] ; Graphic
+    Test Edx, Edx
+.If !Zero?
+	Fld DWord Ptr Ss:[Esp]
+	Test Byte Ptr Ss:[Esp + 4], 1
+	.If !Zero? ; If is add
+		Mov Eax, DWord Ptr Ss:[Esp]
+		Test Eax, Eax
+		.If Zero? ; If random!
+RotateUnit_2:
+			FakeCall SUB_RANDOM
+			Mov Ecx, 360
+			Cdq
+			IDiv Ecx
+			Sub Esp, 4
+			Mov DWord Ptr Ss:[Esp], Edx
+			Fstp St(0)
+			Fild DWord Ptr Ss:[Esp]
+			Pop Eax
+			Fdiv DWord Ptr Ds:[Rate360]
+			Fldpi
+			Fldpi
+			Faddp St(1), St
+			Fmulp St(1), St
+		.Else
+			Fadd DWord Ptr Ds:[Esi + 94H]
+			Fldz
+			Fcomp
+			Fstsw Ax
+			Test Ah, 41H
+			.If Zero?
+				Fldpi
+				Fldpi
+				Faddp St(1), St
+				Faddp St(1), St
+			.Else
+				Fldpi
+				Fldpi
+				Faddp St(1), St
+				Fcom
+				Fstsw Ax
+				Test Ah, 01H
+				.If !Zero?
+					Fsubp St(1), St
+				.Else
+					Fstp St(0)
+				.EndIf
+			.EndIf
+		.EndIf
+	.EndIf
+	Sub Esp, 4
+	Fstp DWord Ptr Ss:[Esp]
+	Mov Ecx, Esi
+	Mov Eax, [Esi]
+	Call DWord Ptr Ds:[Eax + 0C0H]
+.EndIf
+    Add Ebx, 4
+    Dec Ebp
+    Jg RotateUnit_AA
+	Add Esp, 8H
+	__EffectPostfix__
+
+
+; Play Internal Sound
+; Play game sound by quantity. AI Signal determines civilization id.
+; AI 255 is "chorus" - play all civ sounds at once.
+; AI 256 chooses civs randomly.
+PlayDrsSound:
+	Mov Esi, DWord Ptr Ds:[Plc]
+	Mov Esi, DWord Ptr Ds:[Esi + 424H]
+	Mov Eax, DWord Ptr Ds:[Edi + 10H]
+.If Eax < DWord Ptr Ds:[Esi + 38H]
+	Mov Ecx, DWord Ptr Ds:[Esi + 3CH]
+	Mov Ecx, DWord Ptr Ds:[Ecx + Eax * 4]
+	Mov Edx, DWord Ptr Ds:[Edi + 0CH]
+	Mov Ebp, DWord Ptr Ds:[Esi + 50H] ; Civ. count
+
+	Cmp Edx, 255
+	Je PlayDrsSound_Chorus
+	Jg PlayDrsSound_Random
+PlayDrsSound_Normal:
+	Cmp Edx, Ebp
+	Jge PlayDrsSound_Skip
+	Jmp PlayDrsSound_
+PlayDrsSound_Random:
+	Push Ecx
+PlayDrsSound_3: ; Random
+	FakeCall SUB_RANDOM
+	Cdq
+	IDiv Ebp
+	Pop Ecx
+
+PlayDrsSound_:
+	Or Eax, -1
+	Push Eax
+	Push Edx
+	Push Ebx
+	Push Ebx
+	Push 1
+PlayDrsSound_1:
+	FakeCall 004DAC20H
+.EndIf
+PlayDrsSound_Skip:
+	__EffectPostfix__
+
+PlayDrsSound_Chorus:
+	Mov Esi, Ecx
+.Repeat
+	Dec Ebp
+	Or Eax, -1
+	Push Eax
+	Push Ebp
+	Push Ebx
+	Push Ebx
+	Push 1
+	Mov Ecx, Esi
+PlayDrsSound_2:
+	FakeCall 004DAC20H
+	Test Ebp, Ebp
+.Until Zero?
+	__EffectPostfix__
+
+
+; Attach Graphics on units
+; Quantity - graphic id
+; Number - layer, 0 to 4 is lower, 5 to 8 is higher than unit, 9 is remove
+SetAttachGraphic:
+	Mov Eax, DWord Ptr Ds:[Esp + 10H]
+	Cmp Eax, Ebx
+	Jle SetAttachGraphic_Skip
+	Mov Ebp, Eax
+
+	Mov Esi, DWord Ptr Ds:[Plc]
+	Mov Esi, DWord Ptr Ds:[Esi + 424H]
+	Mov Eax, DWord Ptr Ds:[Edi + 10H]
+	Mov Ecx, DWord Ptr Ds:[Esi + 40H]
+	Cmp Eax, Ecx
+	Jae SetAttachGraphic_Remove
+	Mov Ecx, DWord Ptr Ds:[Esi + 44H]
+	Mov Esi, DWord Ptr Ds:[Ecx + Eax * 4]
+
+	Mov Eax, DWord Ptr Ds:[Edi + 64H]
+	Cmp Eax, 9
+	Ja SetAttachGraphic_Skip
+	Shl Eax, 1
+	Lea Eax, [Eax * 4 + Eax + 10] ; EAX = (quantity+1) * 10
+	Lea Edi, [Esp + 94H]
+	Push Eax
+.Repeat
+	Mov Ecx, DWord Ptr Ds:[Edi]
+	Mov Ecx, DWord Ptr Ds:[Ecx + 18H]
+	Xor Edx, Edx
+	Mov Eax, DWord Ptr Ds:[Esp]
+	Push Edx
+	Push Edx
+	Push Edx
+	Push Eax
+	Push Esi
+SetAttachGraphic_1:
+	FakeCall 005ECD40H
+	Add Edi, 4
+	Dec Ebp
+.Until Zero?
+	Pop Eax
+SetAttachGraphic_Skip:
+	__EffectPostfix__
+
+SetAttachGraphic_Remove: ; Remove Attachment
+	Neg Eax
+	Cmp Eax, Ecx
+	Jae SetAttachGraphic_Skip
+	Mov Ecx, DWord Ptr Ds:[Esi + 44H]
+	Mov Esi, DWord Ptr Ds:[Ecx + Eax * 4]
+	Lea Edi, [Esp + 94H]
+.Repeat
+	Mov Ecx, DWord Ptr Ds:[Edi]
+	Mov Ecx, DWord Ptr Ds:[Ecx + 18H]
+	Push Esi
+SetAttachGraphic_2:
+	FakeCall 005ECE00H
+	Add Edi, 4
+	Dec Ebp
+.Until Zero?
+	Jmp SetAttachGraphic_Skip
+
+
+; Set terrain in area
+SetTerrain:
+	Mov Eax, DWord Ptr Ds:[Edi + 10H]
+	Cmp Eax, 42
+	Jae SetTerrain_Skip
+	Mov Esi, DWord Ptr Ds:[Plc]
+	Mov Esi, DWord Ptr Ds:[Esi + 424H]
+	Mov Esi, DWord Ptr Ds:[Esi + 34H]
+	Push Esi ; = Terrain Ptr
+	Mov Ebp, DWord Ptr Ds:[Esi + 04H]
+	Push Eax ; = Terrain Id
+	Mov Ebx, DWord Ptr Ds:[Edi + 4CH] ; Left
+	Mov Ecx, Ebx
+	Mov Eax, DWord Ptr Ds:[Edi + 50H] ; Top
+	Push Eax ; Current Line
+	IMul Eax, DWord Ptr Ds:[Esi + 08H]
+	Add Eax, Ebx
+	Shl Eax, 5H
+	Lea Esi, [Eax + Ebp + 5H]
+	Mov Eax, DWord Ptr Ss:[Esp + 4H]
+	Mov Edx, DWord Ptr Ds:[Edi + 54H] ; Right Border
+SetTerrain_Loop:
+	Mov Byte Ptr Ds:[Esi], Al
+	Add Esi, 20H
+	Inc Ecx
+	Cmp Ecx, Edx
+	Jle SetTerrain_Loop
+	Mov Eax, DWord Ptr Ss:[Esp]
+	Cmp Eax, DWord Ptr Ds:[Edi + 58H] ; Bottom Border
+	Jge SetTerrain_End
+	Inc Eax
+	Mov DWord Ptr Ss:[Esp], Eax
+
+	Mov Eax, DWord Ptr Ss:[Esp + 08H] ; Terrain Ptr
+	Mov Ecx, DWord Ptr Ds:[Eax + 08H]
+	Mov Ebx, DWord Ptr Ds:[Edi + 4CH]
+	Lea Ecx, [Ecx + Ebx - 1]
+	Sub Ecx, Edx
+	Shl Ecx, 5
+	Add Esi, Ecx
+	Mov Ecx, Ebx
+	Mov Eax, DWord Ptr Ss:[Esp + 4H]
+	Jmp SetTerrain_Loop
+SetTerrain_End:
+	Xor Esi, Esi
+	Mov Ebp, DWord Ptr Ss:[Esp + 08H]
+	Mov Eax, DWord Ptr Ss:[Esp + 04H]
+	Push Esi
+	Push Esi
+	Push Eax
+	Mov Edx, DWord Ptr Ds:[Edi + 58H]
+	Push Edx
+	Mov Ecx, DWord Ptr Ds:[Edi + 54H]
+	Mov Eax, DWord Ptr Ds:[Edi + 50H]
+	Mov Edx, DWord Ptr Ds:[Edi + 4CH]
+	Push Ecx
+	Push Eax
+	Push Edx
+	Push Esi
+	Push Esi
+	Mov Ecx, Ebp
+SetTerrain_1:
+	FakeCall 00585230H ; Adujst terrain blending
+	Add Esp, 0CH
+SetTerrain_Skip:
+	__EffectPostfix__
+
+;	Push Eax
+;	Push 1
+;	Push 5
+;	Push 5
+;	Push - 1
+;	Push - 1
+;	Mov Esi, DWord Ptr Ds:[Plc]
+;	Mov Ecx, DWord Ptr Ds:[Esi + 424H]
+;	Mov Ecx, DWord Ptr Ds:[Ecx + 34H]
+;SetTerrain_1:
+;	FakeCall 004614A0H
+;	__EffectPostfix__
+
+
+; Clone Object
+; 0,1-Clone units at target point
+; 2,3-Clone units at target point with offset(anchored by area left)
+; 4,5-Clone units at target point with offset(anchored by area center)
+; Odds would copy properties to new units
+CloneObject:
+    Mov Ebp, [Esp + 10H]
+    Cmp Ebp, Ebx
+    Jle CloneObject_Back
+    Lea Esi, [Esp + 94H]
+    Mov Ecx, DWord Ptr Ss:[Esp + 24H] ; Target unit
+	Mov Eax, DWord Ptr Ds:[Edi + 64H]
+    Push Eax ; Flag
+    Test Ecx, Ecx
+.If Zero?
+	Sub Esp, 8H
+	Fild DWord Ptr Ds:[Edi + 48H]
+	Fadd DWord Ptr Ds:[Float05]
+	Fstp DWord Ptr Ss:[Esp + 4H]
+	Fild DWord Ptr Ds:[Edi + 44H]
+	Fadd DWord Ptr Ds:[Float05]
+	Fstp DWord Ptr Ss:[Esp]
+.Else
+	Mov Eax, DWord Ptr Ds:[Ecx + 38H]
+	Mov Edx, DWord Ptr Ds:[Ecx + 3CH]
+	Push Edx
+	Push Eax
+.EndIf
+	Mov Eax, DWord Ptr Ds:[Edi + 64H]
+	Shr Eax, 1
+	Test Eax, Eax
+	Jg CloneObject_WithOffset
+CloneObject_Loop:
+	Push 1
+	Push 0
+	Mov Eax, DWord Ptr Ss:[Esp + 0CH]
+	Mov Edx, DWord Ptr Ss:[Esp + 08H]
+	Push Eax
+	Push Edx
+	Mov Ebx, DWord Ptr Ds:[Esi]
+	Mov Ebx, DWord Ptr Ds:[Ebx + 8H]
+	Movsx Eax, Word Ptr Ds:[Ebx + 10H]
+	Push Eax
+	Mov Ecx, DWord Ptr Ds:[Esi]
+	Mov Ecx, DWord Ptr Ds:[Ecx + 0CH] ; Player
+CloneObject_1:
+	FakeCall SUB_DROPUNIT
+	Push Edi
+	Mov Edi, Eax
+	Mov Eax, DWord Ptr Ds:[Edi + 8H]
+	Mov Ebx, DWord Ptr Ds:[Esi]
+.If Byte Ptr Ds:[Eax + 4H] >= 70
+	Mov Ecx, Edi
+	Push Ebx
+	Call CloneObject_CopyProp
+.EndIf
+	Test Byte Ptr Ss:[Esp + 0CH], 1
+.If !Zero?
+	Mov Ecx, Edi
+	Push Ebx
+	Call CloneObject_Adjust
+.EndIf
 	Pop Edi
+	Add Esi, 4H
+	Dec Ebp
+	Jne CloneObject_Loop
+	Add Esp, 0CH
+CloneObject_Back:
+	__EffectPostfix__
+
+CloneObject_WithOffset: ; With Offset By Area Left
+	Cmp Eax, 2
+	Je CloneObject_WithOffset_Center
+	Fld DWord Ptr Ss:[Esp + 4H]
+	Fisub DWord Ptr Ds:[Edi + 50H]
+	Fsub DWord Ptr Ds:[Float05]
+	Fstp DWord Ptr Ss:[Esp + 4H]
+	Fld DWord Ptr Ss:[Esp]
+	Fisub DWord Ptr Ds:[Edi + 4CH]
+	Fsub DWord Ptr Ds:[Float05]
+	Fstp DWord Ptr Ss:[Esp]
+CloneObject_2Loop:
+	Push 1
+	Push 0
+	Sub Esp, 8H
+	Mov Ebx, DWord Ptr Ds:[Esi]
+	Fld DWord Ptr Ss:[Esp + 14H]
+	Fadd DWord Ptr Ds:[Ebx + 3CH]
+	Fstp DWord Ptr Ss:[Esp + 04H]
+	Fld DWord Ptr Ss:[Esp + 10H]
+	Fadd DWord Ptr Ds:[Ebx + 38H]
+	Fstp DWord Ptr Ss:[Esp]
+
+	Mov Ebx, DWord Ptr Ds:[Ebx + 8H]
+	Movsx Eax, Word Ptr Ds:[Ebx + 10H]
+	Push Eax
+	Mov Ecx, DWord Ptr Ds:[Esi]
+	Mov Ecx, DWord Ptr Ds:[Ecx + 0CH] ; Player
+CloneObject_2:
+	FakeCall SUB_DROPUNIT
+	Push Edi
+	Mov Edi, Eax
+	Mov Eax, DWord Ptr Ds:[Edi + 8H]
+	Mov Ebx, DWord Ptr Ds:[Esi]
+.If Byte Ptr Ds:[Eax + 4H] >= 70
+	Mov Ecx, Edi
+	Push Ebx
+	Call CloneObject_CopyProp
+.EndIf
+	Test Byte Ptr Ss:[Esp + 0CH], 1
+.If !Zero?
+	Mov Ecx, Edi
+	Push Ebx
+	Call CloneObject_Adjust
+.EndIf
+	Pop Edi
+	Add Esi, 4H
+	Dec Ebp
+	Jne CloneObject_2Loop
+	Add Esp, 0CH
+CloneObject_2Back:
+	__EffectPostfix__
+
+CloneObject_WithOffset_Center: ; With Offset By Area Center
+	Fild DWord Ptr Ds:[Edi + 50H]
+	Fiadd DWord Ptr Ds:[Edi + 58H]
+	Fdiv DWord Ptr Ds:[Float2]
+	Fadd DWord Ptr Ds:[Float05]
+	Fsubr DWord Ptr Ss:[Esp + 4H]
+	Fstp DWord Ptr Ss:[Esp + 4H]
+
+	Fild DWord Ptr Ds:[Edi + 4CH]
+	Fiadd DWord Ptr Ds:[Edi + 54H]
+	Fdiv DWord Ptr Ds:[Float2]
+	Fadd DWord Ptr Ds:[Float05]
+	Fsubr DWord Ptr Ss:[Esp]
+	Fstp DWord Ptr Ss:[Esp]
+	Jmp CloneObject_2Loop
+
+; Adjust angle, hp and storage (ecx=source, arg1=reference)
+CloneObject_Adjust:
+	Push Edi
+	Push Esi
+	Mov Edi, Ecx
+	Mov Esi, DWord Ptr Ss:[Esp + 0CH]
+	Mov Eax, DWord Ptr Ds:[Esi + 30H] ; HP
+	Mov DWord Ptr Ds:[Edi + 30H], Eax
+	Mov Al, Byte Ptr Ds:[Esi + 35H] ; Image Angle
+	Mov Byte Ptr Ds:[Edi + 35H], Al
+	Mov Eax, DWord Ptr Ds:[Esi + 44H] ; Resource Quantity
+	Mov DWord Ptr Ds:[Edi + 44H], Eax
+	Mov Ax, Word Ptr Ds:[Esi + 4CH] ; Resource Type
+	Mov Word Ptr Ds:[Edi + 4CH], Ax
+	Mov Eax, DWord Ptr Ds:[Esi + 94H] ; Rotation
+	Mov DWord Ptr Ds:[Edi + 94H], Eax
+
+	Mov Eax, DWord Ptr Ds:[Esi + 10H]
+.If Eax == DWord Ptr Ds:[Edi + 10H]
+	Push Eax
+	Mov Ecx, DWord Ptr Ds:[Esi + 18H]
+	Mov Edx, [Ecx]
+	Call DWord Ptr Ds:[Edx + 4H] ; Get Frame
+	Push Eax
+	Push DWord Ptr Ds:[Edi + 10H]
+	Mov Ecx, DWord Ptr Ds:[Edi + 18H]
+	Mov Edx, [Ecx]
+	Call DWord Ptr Ds:[Edx + 1CH] ; Set Frame
+.EndIf
 	Pop Esi
-	Pop Ebp
-	Mov Al, 1
-	Pop Ebx
-	Add Esp, 2034H
+	Pop Edi
 	Retn 4
+
+; Copy Protounit Attributes (ecx=source, arg1=reference)
+; Tasks and Damage Graphics are not copied
+CloneObject_CopyProp:
+	Push Edi
+	Push Esi
+	Push Ebp
+	Push Ebx
+	Mov Edi, Ecx
+	Mov Esi, DWord Ptr Ss:[Esp + 14H]
+	Mov Ebx, DWord Ptr Ds:[Edi + 8H]
+	Cmp Ebx, DWord Ptr Ds:[Esi + 8H]
+	Je CloneObject_CopyProp_Skip
+	Mov Ecx, Edi
+CloneObject_3:
+	FakeCall SUB_UNIQUEUNIT
+	Mov Esi, DWord Ptr Ds:[Esi + 8H]
+	Mov Edi, DWord Ptr Ds:[Edi + 8H]
+	Mov Edx, DWord Ptr Ds:[Esi + 8H]
+	Push Edx
+	Lea Ecx, [Edi + 8H]
+	Push Ecx
+CloneObject_4:
+	FakeCall 00568590H ; Set Name
+	Add Esp, 8H
+
+	Mov Ax, Word Ptr Ds:[Esi + 124H] ; Default Armor
+	Mov Word Ptr Ds:[Edi + 124H], Ax
+
+	Movsx Ebp, Word Ptr Ds:[Edi + 126H] ; Armors
+	Test Ebp, Ebp
+	Jle CloneObject_NoArmor
+.If Bp == Word Ptr Ds:[Esi + 126H]
+	Mov Ecx, DWord Ptr Ds:[Esi + 128H]
+	Mov Edx, DWord Ptr Ds:[Edi + 128H]
+	.Repeat
+		Mov Eax, DWord Ptr Ds:[Ecx]
+		Mov DWord Ptr Ds:[Edx], Eax
+		Add Ecx, 4
+		Add Edx, 4
+		Dec Ebp
+	.Until Zero?
+.EndIf
+CloneObject_NoArmor:
+	Movsx Ebp, Word Ptr Ds:[Edi + 12CH] ; Attacks
+	Test Ebp, Ebp
+	Jle CloneObject_NoAttack
+.If Bp == Word Ptr Ds:[Esi + 12CH]
+	Mov Ecx, DWord Ptr Ds:[Esi + 130H]
+	Mov Edx, DWord Ptr Ds:[Edi + 130H]
+	.Repeat
+		Mov Eax, DWord Ptr Ds:[Ecx]
+		Mov DWord Ptr Ds:[Edx], Eax
+		Add Ecx, 4
+		Add Edx, 4
+		Dec Ebp
+	.Until Zero?
+.EndIf
+
+CloneObject_NoAttack:
+	Mov Ebp, 1B8H ; Copy the other attributes
+.If Byte Ptr Ds:[Edi + 4H] == 80
+	Mov Ebp, 218H
+.EndIf
+	Mov Ecx, 08H
+CloneObject_CopyProp_Loop:
+	Mov Eax, DWord Ptr Ds:[Esi + Ebp]
+	Mov DWord Ptr Ds:[Edi + Ebp], Eax
+.If Ebp == 134H ; Attack & Armor
+	Sub Ebp, 14H
+.ElseIf Ebp == 100H || Ebp == 0A0H ; Tasks & Damage Graphics
+	Sub Ebp, 8H
+.Else
+	Sub Ebp, 4H
+.EndIf
+	Cmp Ebp, Ecx
+	Ja CloneObject_CopyProp_Loop
+
+CloneObject_CopyProp_Skip:
+	Pop Ebx
+	Pop Ebp
+	Pop Esi
+	Pop Edi
+	Retn 4
+
+
 
 
 ; ==== Conditions ====
 
-Civilization:
-    Mov Edx, [Esp + 24H]
-    Mov Cl, [Edx + 15DH]
-    Mov Al, [Esi + 0CH]
-    Cmp Al, Cl
-Civilization_01:
-    FakeJne 00437029H ; False
-    Pop Edi
-    Mov Byte Ptr Ds:[Esp + 0FH], 1
-    Mov Al, [Esp + 0FH]
+
+__ConditionPostfix__ Macro
+	Pop Edi
     Pop Esi
     Pop Ebp
     Pop Ebx
     Add Esp, 0CH
     Retn 8
+EndM
 
+
+; On start or load scenario: By checking gaia OLD-ACADMY's attribute - Flying Mode
+; To make it available only at saved loading, please make another trigger with this condition to enable the looped one.
+TestCondition:
+	Mov Ecx, DWord Ptr Ds:[Plc]
+	Mov Ecx, DWord Ptr Ds:[Ecx + 424H]
+	Mov Eax, DWord Ptr Ds:[Ecx + 4CH]
+	Mov Edi, DWord Ptr Ds:[Eax] ; GAIA
+	Xor Eax, Eax
+	Test Edi, Edi
+.If !Zero?
+	Mov Edx, DWord Ptr Ds:[Edi + 74H]
+	Mov Ecx, DWord Ptr Ds:[Edx] ; OLD-ACADMY
+	Test Ecx, Ecx
+	.If !Zero?
+		Mov Bl, Byte Ptr Ds:[Ecx + 70H] ; Flying Mode := 255
+		And Dl, -1
+		Cmp Bl, Dl
+		Mov Byte Ptr Ds:[Ecx + 70H], Dl
+		Setne Al
+	.EndIf
+.EndIf
+	__ConditionPostfix__
 
 
 End DllEntryPoint

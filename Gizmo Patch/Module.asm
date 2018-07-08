@@ -3,6 +3,7 @@
 
 ; ==== Interfaces ====
 ; Allowing Gizmo.dll to apply them. Each part ends of a NULL(0) value.
+; You can also set a next address block by "DD 1, Offset Patches2"
 ; NOTE: If you don't change some of them, you can remove them both in ASM and DEF files.
 
 ; Patches To Write

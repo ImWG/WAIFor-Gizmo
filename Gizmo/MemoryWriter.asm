@@ -50,6 +50,10 @@ WriteJmps Proc _jmpFroms
 	Mov Eax, [Esi]
 	Test Eax, Eax
 	.While !Zero?
+		.If Eax == 1
+			Mov Esi, [Esi + 4]
+			Mov Eax, [Esi]
+		.EndIf
 		Add Esi, 4
 		Mov Ebx, [Esi]
 		Invoke WriteJmp, Eax, Ebx
@@ -80,6 +84,10 @@ WriteDirectAddresses Proc _jmpFroms
 	Mov Eax, [Esi]
 	Test Eax, Eax
 	.While !Zero?
+		.If Eax == 1
+			Mov Esi, [Esi + 4]
+			Mov Eax, [Esi]
+		.EndIf
 		Add Esi, 4
 		Mov Ebx, [Esi]
 		Add Esi, 4
@@ -120,6 +128,10 @@ WriteAddresses Proc _jmpFroms
 	Mov Eax, [Esi]
 	Test Eax, Eax
 	.While !Zero?
+		.If Eax == 1
+			Mov Esi, [Esi + 4]
+			Mov Eax, [Esi]
+		.EndIf
 		Invoke WriteAddress, Eax
 		Add Esi, 4
 		Mov Eax, [Esi]
@@ -156,6 +168,10 @@ WriteAddresses2 Proc _jmpFroms
 	Mov Eax, [Esi]
 	Test Eax, Eax
 	.While !Zero?
+		.If Eax == 1
+			Mov Esi, [Esi + 4]
+			Mov Eax, [Esi]
+		.EndIf
 		Invoke WriteAddress2, Eax
 		Add Esi, 4
 		Mov Eax, [Esi]
@@ -180,6 +196,10 @@ WritePatches Proc _jmpFroms
 	Mov Eax, [Esi]
 	Test Eax, Eax
 	.While !Zero?
+		.If Eax == 1
+			Mov Esi, [Esi + 4]
+			Mov Eax, [Esi]
+		.EndIf
 		Add Esi, 4
 		Mov Ebx, [Esi]
 		Add Esi, 4
