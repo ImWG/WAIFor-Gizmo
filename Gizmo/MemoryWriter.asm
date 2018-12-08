@@ -44,13 +44,20 @@ WriteJmp EndP
 
 WriteJmps Proc _jmpFroms
 	push Esi
-	push ebx
+	Push Ebx
+	Push Edi
+	Xor Edi, Edi
 	Mov Esi, _jmpFroms
 
 	Mov Eax, [Esi]
 	Test Eax, Eax
 	.While !Zero?
 		.If Eax == 1
+			Mov Esi, [Esi + 4]
+			Mov Eax, [Esi]
+		.ElseIf Eax == 2
+			Inc Edi
+			Push Esi
 			Mov Esi, [Esi + 4]
 			Mov Eax, [Esi]
 		.EndIf
@@ -60,7 +67,18 @@ WriteJmps Proc _jmpFroms
 		Add Esi, 4
 		Mov Eax, [Esi]
 		Test Eax, Eax
+		.If Zero?
+			Test Edi, Edi
+			.If !Zero?
+				Dec Edi
+				Pop Esi
+				Add Esi, 8
+				Mov Eax, [Esi]
+			.EndIf
+		.EndIf
+		Test Eax, Eax
 	.EndW
+	Pop Edi
 	pop ebx
 	pop Esi
 	Ret
@@ -79,12 +97,19 @@ WriteDirectAddress EndP
 WriteDirectAddresses Proc _jmpFroms
 	push Esi
 	Push Ebx
+	Push Edi
+	Xor Edi, Edi
 	Mov Esi, _jmpFroms
 
 	Mov Eax, [Esi]
 	Test Eax, Eax
 	.While !Zero?
 		.If Eax == 1
+			Mov Esi, [Esi + 4]
+			Mov Eax, [Esi]
+		.ElseIf Eax == 2
+			Inc Edi
+			Push Esi
 			Mov Esi, [Esi + 4]
 			Mov Eax, [Esi]
 		.EndIf
@@ -96,7 +121,18 @@ WriteDirectAddresses Proc _jmpFroms
 		Add Esi, 4
 		Mov Eax, [Esi]
 		Test Eax, Eax
+		.If Zero?
+			Test Edi, Edi
+			.If !Zero?
+				Dec Edi
+				Pop Esi
+				Add Esi, 8
+				Mov Eax, [Esi]
+			.EndIf
+		.EndIf
+		Test Eax, Eax
 	.EndW
+	Pop Edi
 	pop ebx
 	pop Esi
 	Ret
@@ -122,7 +158,9 @@ WriteAddress EndP
 
 WriteAddresses Proc _jmpFroms
 	push Esi
-	push ebx
+	Push Ebx
+	Push Edi
+	Xor Edi, Edi
 	Mov Esi, _jmpFroms
 
 	Mov Eax, [Esi]
@@ -131,12 +169,28 @@ WriteAddresses Proc _jmpFroms
 		.If Eax == 1
 			Mov Esi, [Esi + 4]
 			Mov Eax, [Esi]
+		.ElseIf Eax == 2
+			Inc Edi
+			Push Esi
+			Mov Esi, [Esi + 4]
+			Mov Eax, [Esi]
 		.EndIf
 		Invoke WriteAddress, Eax
 		Add Esi, 4
 		Mov Eax, [Esi]
 		Test Eax, Eax
+		.If Zero?
+			Test Edi, Edi
+			.If !Zero?
+				Dec Edi
+				Pop Esi
+				Add Esi, 8
+				Mov Eax, [Esi]
+			.EndIf
+		.EndIf
+		Test Eax, Eax
 	.EndW
+	Pop Edi
 	pop ebx
 	pop Esi
 	Ret
@@ -162,7 +216,9 @@ WriteAddress2 EndP
 
 WriteAddresses2 Proc _jmpFroms
 	push Esi
-	push ebx
+	Push Ebx
+	Push Edi
+	Xor Edi, Edi
 	Mov Esi, _jmpFroms
 
 	Mov Eax, [Esi]
@@ -171,12 +227,28 @@ WriteAddresses2 Proc _jmpFroms
 		.If Eax == 1
 			Mov Esi, [Esi + 4]
 			Mov Eax, [Esi]
+		.ElseIf Eax == 2
+			Inc Edi
+			Push Esi
+			Mov Esi, [Esi + 4]
+			Mov Eax, [Esi]
 		.EndIf
 		Invoke WriteAddress2, Eax
 		Add Esi, 4
 		Mov Eax, [Esi]
 		Test Eax, Eax
+		.If Zero?
+			Test Edi, Edi
+			.If !Zero?
+				Dec Edi
+				Pop Esi
+				Add Esi, 8
+				Mov Eax, [Esi]
+			.EndIf
+		.EndIf
+		Test Eax, Eax
 	.EndW
+	Pop Edi
 	pop ebx
 	pop Esi
 	Ret
@@ -191,12 +263,19 @@ WritePatch EndP
 WritePatches Proc _jmpFroms
 	push Esi
 	Push Ebx
+	Push Edi
+	Xor Edi, Edi
 	Mov Esi, _jmpFroms
 
 	Mov Eax, [Esi]
 	Test Eax, Eax
 	.While !Zero?
 		.If Eax == 1
+			Mov Esi, [Esi + 4]
+			Mov Eax, [Esi]
+		.ElseIf Eax == 2
+			Inc Edi
+			Push Esi
 			Mov Esi, [Esi + 4]
 			Mov Eax, [Esi]
 		.EndIf
@@ -208,7 +287,18 @@ WritePatches Proc _jmpFroms
 		Add Esi, 4
 		Mov Eax, [Esi]
 		Test Eax, Eax
+		.If Zero?
+			Test Edi, Edi
+			.If !Zero?
+				Dec Edi
+				Pop Esi
+				Add Esi, 8
+				Mov Eax, [Esi]
+			.EndIf
+		.EndIf
+		Test Eax, Eax
 	.EndW
+	Pop Edi
 	pop ebx
 	pop Esi
 	Ret

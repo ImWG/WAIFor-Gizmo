@@ -23,6 +23,8 @@ StringBuffer    DB 256 Dup(0)
 StringBuffer2   DB 256 Dup(0)
 StringBufferInt DB 8 Dup(0)
 
+MAX_MODULES Equ 10 ; Or this would be killed by anti-virus
+
 .Code
 
 DllMain Proc Uses Esi Edi Ecx hInstance, dwReason, lpvReserved
@@ -50,7 +52,7 @@ DllMain Proc Uses Esi Edi Ecx hInstance, dwReason, lpvReserved
 
 	Invoke wsprintf, Addr StringBufferInt, Addr INIPattern, Edi
 	Invoke GetPrivateProfileString, Addr INIPatches, Addr StringBufferInt, Addr ININull, Addr StringBuffer, 256, Addr INIFile
-.While Byte Ptr Ds:[StringBuffer] != 0
+.While Edi > MAX_MODULES || Byte Ptr Ds:[StringBuffer] != 0
 	; Load DLL
 	Invoke wsprintf, Addr StringBuffer2, Addr PathPattern, Addr PathDll, Addr StringBuffer
 	Invoke LoadLibrary, Addr StringBuffer2
@@ -81,7 +83,7 @@ DllMain Proc Uses Esi Edi Ecx hInstance, dwReason, lpvReserved
 		Inc Edi
 		Invoke wsprintf, Addr StringBufferInt, Addr INIPattern, Edi
 		Invoke GetPrivateProfileString, Addr INITriggers, Addr StringBufferInt, Addr ININull, Addr StringBuffer, 256, Addr INIFile
-	.Until Byte Ptr Ds:[StringBuffer] == 0
+	.Until Edi > MAX_MODULES || Byte Ptr Ds:[StringBuffer] == 0
 
 .EndIf
 

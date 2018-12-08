@@ -2,7 +2,7 @@
 
                  WAIFor Gizmo
                  Alpha Version
-                        By WAIFor 2017.06.14
+                        By WAIFor 2018.12.08
 
 ==============================================
 
@@ -41,7 +41,8 @@ INI file has two sections: [Patches] for unhardcoding patches, and [Triggers]
 for new conditions and effects.
 Each section contains items to load. Keys must be serial positive numbers:
 1, 2, 3 ... Values are DLL file names. The larger key is, the latter module
-loaded.
+loaded. For security, Gizmo can load 10 DLL modules at most on both patches
+and triggers.
 
 When the game is running, Gizmo will load patches, to inject the EXE file.
 For trigger modules, Gizmo will load and assign them after original conditions
@@ -74,6 +75,10 @@ DirectAddresses - DWord * 3?, set direct addresses. First DWord is destination
 
 All above lists must be ended with a DWord null(0). Any of them could be omitted
 if there is no such operations to do.
+Every interfaces can have chained or sub lists, making developers easier to put
+modules in different assembly files. If an element equalled to 1, Gizmo would jump
+to the address by the next element, called "chain". If equalled to 2, Gizmo would
+process sub address table by the next element, called "sub".
 Patches can do some works in DllEntryPoint process, though not used commonly.
 
 Interfaces of triggers:
