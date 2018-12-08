@@ -1,0 +1,6 @@
+EXPORTS
+	Patches         = __Patches
+	Addresses       = __Addresses 
+	Addresses2      = __Addresses2 
+	DirectAddresses = __DirectAddresses 
+	Jumps           = __Jumps 
