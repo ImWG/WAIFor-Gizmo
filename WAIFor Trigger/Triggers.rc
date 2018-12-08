@@ -1,0 +1,33 @@
+#include "Triggers.h"
+
+
+
+IDR_VERSION VERSIONINFO
+ FILEVERSION 1,1,0,100
+ PRODUCTVERSION 1,1,0,100
+ FILEFLAGSMASK 0x3L
+ FILEFLAGS 0x1L
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "Comments", "Programmed in assembly with Easy Code\0"
+            VALUE "CompanyName", "Microsoft\0"
+            VALUE "FileDescription", "WAIFor's Triggers For Gizmo\0"
+            VALUE "FileVersion", "1.01.0.1005\0"
+            VALUE "InternalName", "Triggers\0"
+            VALUE "LegalCopyright", "Copyright © 2017 Microsoft\0"
+            VALUE "OriginalFilename", "Triggers.dll\0"
+            VALUE "ProductName", "Triggers\0"
+            VALUE "ProductVersion", "1.01.0.1005\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0409, 1252
+    END
+END

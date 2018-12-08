@@ -168,7 +168,8 @@ ChoiceBox:
 	Mov Ecx, DWord Ptr Ds:[Plc]
 ChoiceBox_1:
 	FakeCall 005EAE90H
-.If Eax == 1
+	Test Eax, Eax
+.If Zero?
 	Sub Esp, 100H
 	Invoke  GetActiveWindow
 	Mov Ebp, Eax
@@ -177,19 +178,19 @@ ChoiceBox_1:
 	Invoke  GetWindowText, Ebp, Esi, 255
 	Mov Edx, DWord Ptr Ds:[Edi + 6CH]
 	Invoke  MessageBox, Ebp, Edx, Esi, MB_ICONQUESTION + MB_YESNO
-.If Eax == IDYES
-	Mov Eax, 1
-.Else
-	Mov Eax, 0
-.EndIf
+	.If Eax == IDYES
+		Mov Eax, 1
+	.Else
+		Mov Eax, 0
+	.EndIf
 	Mov [Esp], Eax
 	Mov Esi, Ss:[Esp + 118H] ; Source Player
 	Mov Ecx, [Edi + 14H] ; Resource Id
-.If Ecx < DWord Ptr Ds:[Esi + 0A0H]
-	Mov Esi, [Esi + 0A8H]
-	Fild DWord Ptr Ds:[Esp]
-	Fstp DWord Ptr Ds:[Esi + Ecx * 4]
-.EndIf
+	.If Ecx < DWord Ptr Ds:[Esi + 0A0H]
+		Mov Esi, [Esi + 0A8H]
+		Fild DWord Ptr Ds:[Esp]
+		Fstp DWord Ptr Ds:[Esi + Ecx * 4]
+	.EndIf
 	Add Esp, 100H
 .EndIf
 	__EffectPostfix__
@@ -513,7 +514,6 @@ Modifier_Loop:
 	Mov DWord Ptr Ss:[Esp], Esi
 	Mov Esi, DWord Ptr Ss:[Esp + 4H]
 
-Modifier_:
 	Mov Ebx, DWord Ptr Ds:[Edi + 3CH] ; ebx = Attribute ID
 	Mov Ecx, DWord Ptr Ss:[Esp + 20H] ; Player
 	Push Ebp
@@ -559,7 +559,7 @@ Modifier_:
 .EndIf
 Modifier_End:
 	add esp, 8h
-
+Modifier_:
 	Pop Edi
 	Pop Esi
 	Pop Ebp

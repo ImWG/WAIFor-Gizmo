@@ -260,6 +260,9 @@ Protounit_Char:
 	Mov Edx, DWord Ptr Ss:[Esp + 24H]
 	Mov Ecx, DWord Ptr Ss:[Esp + 28H]
 	.If Ecx > 0
+		.If Byte Ptr Ss:[Esp + 18H] < 70
+			Mov Byte Ptr Ss:[Esp + 18H], 70
+		.EndIf
 		.Repeat
 			mov ebx, [edx]
 			mov ebx, dword ptr ds:[ebx+8h]
@@ -323,6 +326,9 @@ Protounit_Word:
 	Mov Edx, DWord Ptr Ss:[Esp + 24H]
 	Mov Ecx, DWord Ptr Ss:[Esp + 28H]
 	.If Ecx > 0
+		.If Byte Ptr Ss:[Esp + 18H] < 70
+			Mov Byte Ptr Ss:[Esp + 18H], 70
+		.EndIf
 		.Repeat
 			mov ebx, [edx]
 			mov ebx, dword ptr ds:[ebx+8h]
@@ -385,6 +391,9 @@ Protounit_DWord:
 	Mov Edx, DWord Ptr Ss:[Esp + 24H]
 	Mov Ecx, DWord Ptr Ss:[Esp + 28H]
 	.If Ecx > 0
+		.If Byte Ptr Ss:[Esp + 18H] < 70
+			Mov Byte Ptr Ss:[Esp + 18H], 70
+		.EndIf
 		.Repeat
 			mov ebx, [edx]
 			mov ebx, dword ptr ds:[ebx+8h]
@@ -451,6 +460,9 @@ Protounit_Float:
 	Mov Edx, DWord Ptr Ss:[Esp + 24H]
 	Mov Ecx, DWord Ptr Ss:[Esp + 28H]
 	.If Ecx > 0
+		.If Byte Ptr Ss:[Esp + 18H] < 70
+			Mov Byte Ptr Ss:[Esp + 18H], 70
+		.EndIf
 		.Repeat
 			mov ebx, [edx]
 			mov ebx, dword ptr ds:[ebx+8h]
@@ -512,8 +524,12 @@ Protounit_Image:
 		.If Eax < DWord Ptr Ds:[Edx + 40H] ; Not overflow
 			Mov Edx, DWord Ptr Ds:[Edx + 44H]
 			Mov Eax, DWord Ptr Ds:[Eax * 4 + Edx]
-			Mov DWord Ptr Ss:[Ebx + Ebp], Eax
+		.Else
+			Cmp Ebp, 18H
+			Je Protounit_Image_
+			Xor Edi, Edi
 		.EndIf
+		Mov DWord Ptr Ss:[Ebx + Ebp], Eax
 	.EndIf
 .Else
 	Mov Edx, DWord Ptr Ds:[Esi + 8CH]
@@ -526,17 +542,23 @@ Protounit_Image:
 	.EndIf
 	.If Eax < DWord Ptr Ds:[Edx + 40H] ; Not overflow
 		Mov Edi, DWord Ptr Ds:[Eax * 4 + Edx]
-
-		Mov Edx, DWord Ptr Ss:[Esp + 24H]
-		Mov Ecx, DWord Ptr Ss:[Esp + 28H]
-		.If Ecx > 0
-			.Repeat
-				mov ebx, [edx]
-				Mov Esi, DWord Ptr Ds:[Ebx + 8H]
-				Mov Al, Byte Ptr Ss:[Esp + 18H] ; min type
-				.If Al <= Byte Ptr Ds:[Esi + 04H]
-					Mov DWord Ptr Ds:[Esi + Ebp], Edi
-				.EndIf
+	.Else
+		Cmp Ebp, 18H
+		Je Protounit_Image_
+		Xor Edi, Edi
+	.EndIf
+	Mov Edx, DWord Ptr Ss:[Esp + 24H]
+	Mov Ecx, DWord Ptr Ss:[Esp + 28H]
+	.If Ecx > 0
+		.If Byte Ptr Ss:[Esp + 18H] < 70
+			Mov Byte Ptr Ss:[Esp + 18H], 70
+		.EndIf
+		.Repeat
+			mov ebx, [edx]
+			Mov Esi, DWord Ptr Ds:[Ebx + 8H]
+			Mov Al, Byte Ptr Ss:[Esp + 18H] ; min type
+			.If Al <= Byte Ptr Ds:[Esi + 04H]
+				Mov DWord Ptr Ds:[Esi + Ebp], Edi
 				; Refresh
 				Push Ecx
 				Push Edx
@@ -546,11 +568,10 @@ Protounit_Image_1:
 				FakeCall SUB_REFRESH_GRAPHIC
 				Pop Edx
 				Pop Ecx
-
-				add edx, 4h
-				Dec Ecx
-			.Until Zero?
-		.EndIf
+			.EndIf
+			add edx, 4h
+			Dec Ecx
+		.Until Zero?
 	.EndIf
 .EndIf
 Protounit_Image_:
@@ -589,8 +610,10 @@ Protounit_Sound:
 		.If Eax < DWord Ptr Ds:[Edx + 38H] ; Not overflow
 			Mov Edx, DWord Ptr Ds:[Edx + 3CH]
 			Mov Eax, DWord Ptr Ds:[Eax * 4 + Edx]
-			Mov DWord Ptr Ss:[Ebx + Ebp], Eax
+		.Else
+			Xor Edi, Edi
 		.EndIf
+		Mov DWord Ptr Ss:[Ebx + Ebp], Eax
 	.EndIf
 .Else
 	Mov Edx, DWord Ptr Ds:[Esi + 8CH]
@@ -603,22 +626,26 @@ Protounit_Sound:
 	.EndIf
 	.If Eax < DWord Ptr Ds:[Edx + 38H] ; Not overflow
 		Mov Edi, DWord Ptr Ds:[Eax * 4 + Edx]
-
-		Mov Edx, DWord Ptr Ss:[Esp + 24H]
-		Mov Ecx, DWord Ptr Ss:[Esp + 28H]
-		.If Ecx > 0
-			.Repeat
-				mov ebx, [edx]
-				Mov Ebx, DWord Ptr Ds:[Ebx + 8H]
-
-				Mov Al, Byte Ptr Ss:[Esp + 18H] ; min type
-				.If Al <= Byte Ptr Ds:[Ebx + 04H]
-					Mov DWord Ptr Ss:[Ebx + Ebp], Edi
-				.EndIf
-				add edx, 4h
-				Dec Ecx
-			.Until Zero?
+	.Else
+		Xor Edi, Edi
+	.EndIf
+	Mov Edx, DWord Ptr Ss:[Esp + 24H]
+	Mov Ecx, DWord Ptr Ss:[Esp + 28H]
+	.If Ecx > 0
+		.If Byte Ptr Ss:[Esp + 18H] < 70
+			Mov Byte Ptr Ss:[Esp + 18H], 70
 		.EndIf
+		.Repeat
+			mov ebx, [edx]
+			Mov Ebx, DWord Ptr Ds:[Ebx + 8H]
+
+			Mov Al, Byte Ptr Ss:[Esp + 18H] ; min type
+			.If Al <= Byte Ptr Ds:[Ebx + 04H]
+				Mov DWord Ptr Ss:[Ebx + Ebp], Edi
+			.EndIf
+			add edx, 4h
+			Dec Ecx
+		.Until Zero?
 	.EndIf
 .EndIf
 Protounit_Sound_:
@@ -706,6 +733,9 @@ Protounit_Armor:
 	Mov Edx, DWord Ptr Ss:[Esp + 24H]
 	Mov Ecx, DWord Ptr Ss:[Esp + 28H]
 	.If Ecx > 0
+		.If Byte Ptr Ss:[Esp + 18H] < 70
+			Mov Byte Ptr Ss:[Esp + 18H], 70
+		.EndIf
 		.Repeat
 			mov ebx, [edx]
 			mov ebx, dword ptr ds:[ebx+8h]
