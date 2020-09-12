@@ -21,6 +21,7 @@ Begin ECProject = WAIForTest
   StartupWindow=Module
   Title=Easy Code Masm classic project
   Resources=WAIForTest.ecr
+  Module=AdvUnits.asm
   Module=CustomSlp.asm
   Module=Editor.asm
   Module=ExTerr.asm

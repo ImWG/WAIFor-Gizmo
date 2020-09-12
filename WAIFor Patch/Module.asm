@@ -17,6 +17,7 @@ __Patches DD 2, Offset __ExTriggers_Patches
 		;DD 2, Offset __Editor_Patches
 		;DD 2, Offset __CustomSLP_Patches
 		DD 2, Offset __ExTerrains_Patches
+		;DD 2, Offset __AdvUnits_Patches
 		DD 0
 		;DD 007BB320H, Offset TerrNameSnow, SizeOf TerrNameSnow
 		;DD 007BB344H, Offset TerrNameRock, SizeOf TerrNameRock
@@ -24,12 +25,15 @@ __Patches DD 2, Offset __ExTriggers_Patches
 ; Address List To Change (Offset 1, For FakeJmp and FakeCall)
 __Addresses DD Offset PowerShow_1, Offset PowerShow_2, MoreOnMinimap1_1, MoreOnMinimap2_1, MoreOnMinimap3_1
 		DD ColoredUnit_1, ColoredUnit2_1, CustomGarrison_1, BuilderSound_1, MoreLang_1, AddUnitZPosition_1
-		DD AdvAdjacentMode_1, AdvAdjacentMode_2, AdvAdjacentMode_3
+		DD AdvAdjacentMode_1, AdvAdjacentMode_2, AdvAdjacentMode_3, AdvancedCheats_1, AdvancedCheats_2
+		DD AdvCheats_ChangeName_1, AdvCheats_ChangeName_2, AdvCheats_ChangeName_3, AdvCheats_ChangeName_4
+		DD RTTest_1
 		;DD TerrainCollision_1
 		DD 2, Offset __ExTriggers_Addrs
 		DD 2, Offset __Editor_Addrs
 		DD 2, Offset __CustomSLP_Addrs
 		DD 2, Offset __ExTerrains_Addrs
+		DD 2, Offset __AdvUnits_Addrs
 		DD 0
 
 ; Address List To Change (Offset 2, For Fake Conditional Jumps)
@@ -40,6 +44,7 @@ __Addresses2 DD MoreOnMinimap1_01, MoreOnMinimap2_01, MoreOnMinimap3_01, 004337C
 		DD 2, Offset __Editor_Addrs2
 		DD 2, Offset __CustomSLP_Addrs2
 		DD 2, Offset __ExTerrains_Addrs2
+		;DD 2, Offset __AdvUnits_Addrs2
 		DD 0
 
 ; Address List To Write Direct Address (e.g. Jmp [eax * 4 + Address])
@@ -49,6 +54,7 @@ __DirectAddresses DD 004337C7H, MoreOnMinimap3, 0
 		DD 2, Offset __Editor_Dircts
 		DD 2, Offset __CustomSLP_Dircts
 		;DD 2, Offset __ExTerrains_Dircts
+		;DD 2, Offset __AdvUnits_Dircts
 		DD 0
 
 ; Address List To Jump From EXE to DLL
@@ -63,6 +69,9 @@ __Jumps DD 0044E9AEH, Offset PowerShow
 		DD 0044DE47H, MoreLang
 		DD 00414ADAH, AddUnitZPosition
 		DD 004C9E7DH, Offset AdvAdjacentMode
+		DD 0044456CH, AdvancedCheats
+		DD 00567BF9H, RTTest
+
 		;DD 005634DBH, TerrainCollision
 		;DD 004D4FB5H, Offset CustomAll
 		;DD 004E8DE7H, Offset CustomIcon1
@@ -71,6 +80,7 @@ __Jumps DD 0044E9AEH, Offset PowerShow
 		DD 2, Offset __Editor_Jmps
 		DD 2, Offset __CustomSLP_Jmps
 		DD 2, Offset __ExTerrains_Jmps
+		DD 2, Offset __AdvUnits_Jmps
 		DD 0
 
 
@@ -81,6 +91,7 @@ Const0001 DD 0.001
 .Data?
 
 CustomTagLocation DD ?
+
 
 
 .Data
@@ -96,6 +107,7 @@ TerrNameLava DB 'Lava', 0
 TerrNameBaobab DB 'Baobab Forest', 0
 TerrNameSnow DW 10666, 3, 0, 2
 TerrNameRock DW 5520, 10896
+CheatRenamePattern DB '/SETNAME ', 0
 
 IntNamePattern DB '%s{%s}, %d', 0
 IntNamePattern2 DB '%s, %d', 0
@@ -112,6 +124,7 @@ HotKeySwitchFlag DD 0
 
 
 .Code
+
 
 
 ; Entry, can't be ignored
@@ -367,6 +380,84 @@ AdvAdjacentMode_3:
 
 AdvAdjacentMode_Table:
 	DD 004C9E83H, Offset AdvAdjacentMode_Ortho
+
+
+AdvancedCheats:
+.If Zero?
+	Push 7DH
+AdvancedCheats_1:
+	FakeJmp 004445AEH
+.EndIf
+	Push Edi
+	Push Esi
+	Mov Esi, Offset CheatRenamePattern
+	Lea Edi, [Esp + 00000218H]
+	Cld
+	Mov Ecx, 10
+	Repe Cmpsb
+	Test Ecx, Ecx
+	Je AdvCheats_ChangeName
+	Pop Esi
+	Pop Edi
+AdvancedCheats_2:
+	FakeJmp 00444572H
+
+AdvCheats_ChangeName: ; Cutsom Unit Names
+	Pop Esi
+	Pop Edi
+	Mov Ecx, DWord Ptr Ds:[Plc]
+AdvCheats_ChangeName_1:
+	FakeCall 005E7560H
+	Mov Esi, Eax
+	Lea Edi, [Esp + 00000210H + 9]
+	Mov Ebx, 40
+	Lea Esi, [Esi + 1C4H]
+
+AdvCheats_ChangeName_Loop:
+	Mov Ecx, [Esi]
+	Test Ecx, Ecx
+	Je AdvCheats_ChangeName_4
+	Mov Eax, [Ecx + 8]
+	Cmp Byte Ptr Ds:[Eax + 4], 70
+	Jl AdvCheats_ChangeName_Skip
+AdvCheats_ChangeName_2:
+	FakeCall SUB_UNIQUEUNIT
+	Mov Ecx, [Esi]
+	Mov Ecx, [Ecx + 8]
+	Or Eax, -1
+	Mov DWord Ptr Ds:[Ecx + 0CH], Eax
+	Add Ecx, 8H
+	Push Edi
+	Push Ecx
+AdvCheats_ChangeName_3: ; Change Name
+	FakeCall 00568590H
+	Add Esp, 8H
+AdvCheats_ChangeName_Skip:
+	Add Esi, 4
+	Dec Ebx
+	Jg AdvCheats_ChangeName_Loop
+AdvCheats_ChangeName_4:
+	FakeJmp 004445B9H
+
+
+; Real Time Event Test
+RTTest: ; 00567BF9H, Esi = Unit Addr
+	Fld1
+	Fld DWord Ptr Ds:[Esi + 30H]
+	Fcompp
+	Fstsw Ax
+	Test Ah, 1H
+	Jnz RTTest_Skip
+	Mov Ecx, Esi
+	Call $AdvUnits
+
+RTTest_Skip:
+	Mov Ecx, Esi
+	Mov Edx, DWord Ptr Ds:[Esi]
+	Call DWord Ptr Ds:[Edx + 24H]
+RTTest_1:
+	FakeJmp 00567BFEH
+
 
 
 ; NOTE: This is just for syntax correct.
