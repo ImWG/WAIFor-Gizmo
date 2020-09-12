@@ -6,6 +6,7 @@ __Editor_Addrs DD InternalName_1, InternalName_2, InternalName_3, InternalName_4
 	DD HotKeySwitcher_1, ShowUnitInfo_1
 	DD HiddenUnit_1, HiddenUnit2_1, HiddenUnit3_1
 	DD TerrainName_1, TerrainName_2, TerrainName_3, TerrainName2_1, TerrainName2_2, TerrainName2_3
+	DD TrainName_1
 	DD 0 ;1, Offset __CustomSLP_Addrs
 
 __Editor_Addrs2 DD HiddenUnit_01, HiddenUnit_02, HiddenUnit2_01, HiddenUnit2_02
@@ -28,6 +29,7 @@ __Editor_Jmps DD 004E0E81H, Offset InternalName1
 	DD 004E0AAFH, Offset HiddenUnit
 	DD 004E0D8FH, Offset HiddenUnit2
 	DD 004E5025H, Offset HiddenUnit3
+	;DD 007E25AFH, Offset TrainName
 	;DD 007BB122H, TerrainName
 	;DD 007BB038H, TerrainName2
 	DD 0 ;1, Offset __CustomSLP_Jmps
@@ -400,3 +402,50 @@ TerrainName2_2:
 	FakeCall 00550840H ; Create By Instant String
 TerrainName2_3:
 	FakeJmp 007BB0C9H
+
+
+; Makes Unnamed units shown by their internal name on train buttons
+; Pattern: Create Object <Unit Name>
+TrainName: ; 007E25AFH
+	Sub Esp, 200H
+
+	Lea Edx, [Esp]
+	Push 100H
+	Push Edx
+	Movzx Eax, Word Ptr Ds:[Edi + 0CH] ; EDI is always to be protounit, though this is just a hack.
+	Push Eax
+	Mov Ecx, DWord Ptr Ds:[Plc]
+	Mov Eax, DWord Ptr Ds:[Ecx]
+	Call DWord Ptr Ds:[Eax + 28H] ; Get Unit Name
+	Mov Al, Byte Ptr Ss:[Esp]
+	Test Al, Al
+.If Zero?
+	Mov Eax, DWord Ptr Ds:[Edi + 8H]
+.Else
+	Lea Eax, [Esp]
+.EndIf
+	Push Eax
+
+	Mov Ecx, DWord Ptr Ds:[Plc]
+	Lea Edx, [Esp + 104H]
+	Mov Eax, DWord Ptr Ds:[Ecx]
+	Push 100H
+	Push Edx
+	Push 2941H
+	Call DWord Ptr Ds:[Eax + 28H] ; Get "Create Unit"
+
+	Pop Eax
+	Lea Edx, [Esp + 100H]
+	Lea Ecx, [Esp + 0A08H + 200H]
+	Invoke wsprintf, Ecx, 0066FB30H, Edx, Eax ; "%s %s"
+
+	;Mov Ecx, DWord Ptr Ds:[7912A0H]
+	;Lea Edx, [Esp + 0A08H]
+	;Mov Eax, DWord Ptr Ds:[Ecx]
+	;Push 200H
+	;Push Edx
+	;Push 2941H
+	;Call DWord Ptr Ds:[Eax + 28H]
+	Add Esp, 200H
+TrainName_1:
+	FakeJmp 007E25CCH
