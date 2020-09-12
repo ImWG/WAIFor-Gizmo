@@ -97,12 +97,12 @@ DamageUnit: ; ST(0) = Quantity
 ; 3 - Set HP by permillage
 ; 4 - Damage HP by current lost HP's permillage
 ; 5 - Set HP by current HP's permillage
-; 6 - Save HP into Resource
-; 7 - Load HP from Resource
+; 7 - Save HP into Resource
+; 8 - Load HP from Resource
 Align 4
 DamageUnit_Table:
 	DD Offset DamageUnit_, DamageUnit_1, DamageUnit_Perm, DamageUnit_Perm, DamageUnit_LostPerm
-	DD Offset DamageUnit_CurrentPerm, 0
+	DD Offset DamageUnit_CurrentPerm, DamageUnit_, 0
 
 DamageUnit_:
 	Fsubr DWord Ptr Ds:[Eax + 30H]
